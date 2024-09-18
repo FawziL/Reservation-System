@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../entities/user.entity';
+import { RegisterDto } from './dto/register.dto';
+import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
-  }
+    constructor(
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+        private readonly jwtService: JwtService,
+    ) {}
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+    async register(createUserDto: RegisterDto): Promise<User> {
+        const { username, password, email } = createUserDto;
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+        // Verificar si el usuario ya existe
+        const existingUser = await this.userRepository.findOne({ where: { email } });
+        if (existingUser) {
+            throw new ConflictException('Email already registered');
+        }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+      // Hashear la contraseña
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
+        // Crear un nuevo usuario
+        const newUser = this.userRepository.create({
+            username,
+            password: hashedPassword,
+            email,
+        });
+
+        return this.userRepository.save(newUser);
+    }
+
+    async validateUser(email: string, password: string): Promise<User | null> {
+        const user = await this.userRepository.findOne({ where: { email } });
+        if (user && (await bcrypt.compare(password, user.password))) {
+            return user;
+        }
+        return null;
+    }
+
+    async login(user: User): Promise<{ access_token: string }> {
+        const payload = { username: user.username, sub: user.id };
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
+    }
 }
