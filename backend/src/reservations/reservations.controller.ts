@@ -17,6 +17,7 @@ export class ReservationsController {
     return this.reservationsService.findAll();
   }
 
+  /*
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reservationsService.findOne(+id);
@@ -30,5 +31,5 @@ export class ReservationsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.reservationsService.remove(+id);
-  }
+  }*/
 }

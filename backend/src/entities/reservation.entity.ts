@@ -10,7 +10,7 @@ export class Reservation {
   @Column()
   reservationDate: Date;
 
-  @Column()
+  @Column({ default: 'pending' })
   status: string;
 
   @ManyToOne(() => User, user => user.reservations)

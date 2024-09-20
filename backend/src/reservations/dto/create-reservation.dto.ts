@@ -1,1 +1,5 @@
-export class CreateReservationDto {}
+export class CreateReservationDto {
+    userID: number;
+    date: Date;
+    table: number;
+}
