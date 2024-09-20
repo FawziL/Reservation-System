@@ -4,17 +4,18 @@ import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    JwtModule.register({
-      secret: 'your-secret-key', // Reemplaza con tu clave secreta
-      signOptions: { expiresIn: '60s' }, // Configura según tus necesidades
+    JwtModule.register({ 
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '60s' }, 
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
   exports: [AuthService], // Si necesitas exportar el servicio para usarlo en otros módulos
 })
 export class AuthModule {}
