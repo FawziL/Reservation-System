@@ -6,10 +6,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Reservation } from '../entities/reservation.entity';
 import { Table } from '../entities/table.entity';
+import { NotificationsService } from '../notifications/notifications.service'
 
 @Injectable()
 export class ReservationsService {
   constructor(
+    private readonly NotificationsService: NotificationsService,
     private readonly usersService: UsersService,
     @InjectRepository(Reservation)
     private readonly reservationRepository: Repository<Reservation>,
@@ -23,19 +25,28 @@ export class ReservationsService {
       throw new NotFoundException('User not found');
     }
     console.log(createReservationDto.table)
-  const table = await this.tableRepository.findOne({ where: { id: createReservationDto.table } });
-
-  if (!table) {
-    throw new NotFoundException('Table not found');
-  }
-
+    
+    const table = await this.tableRepository.findOne({ where: { id: createReservationDto.table } });
+    if (!table) {
+      throw new NotFoundException('Table not found');
+    }
+  
     const reservation = this.reservationRepository.create({
       reservationDate: createReservationDto.date,
-      user: user, // Asignar el objeto User
-      table: { id: createReservationDto.table }, // Asumiendo que `table` es un ID
+      user: user, 
+      table: { id: createReservationDto.table }, 
     });
-
-    return this.reservationRepository.save(reservation);
+    
+    const savedReservation = await this.reservationRepository.save(reservation);
+  
+    // Enviar notificación después de crear la reserva
+    await this.NotificationsService.sendEmail({
+      to: user.email, // Usa el correo del usuario
+      subject: 'Reservation Confirmation',
+      text: `Your reservation for table ${table.tableNumber} on ${savedReservation.reservationDate} has been confirmed.`,
+    });
+  
+    return savedReservation;
   }
 
   async findAll() {
