@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { TablesService } from './tables.service';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
+import { CheckAvailabilityDto } from './dto/check-availability.dto';
 
 @Controller('tables')
 export class TablesController {
@@ -10,6 +11,10 @@ export class TablesController {
   @Post()
   create(@Body() createTableDto: CreateTableDto) {
     return this.tablesService.create(createTableDto);
+  }
+  @Get('availability')
+  checkAvailability(@Query() checkAvailabilityDto: CheckAvailabilityDto) {
+    return this.tablesService.checkAvailability(checkAvailabilityDto);
   }
 
   @Get()
