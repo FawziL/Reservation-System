@@ -60,8 +60,11 @@ export class ReservationsService {
         });
     }
 
-    /*async findOne(id: number) {
-        const reservation = await this.reservationRepository.findOne(id, { relations: ['user', 'table'] });
+    async findOne(id: number) {
+        const reservation = await this.reservationRepository.findOne({
+            where: { id },
+            relations: ['user', 'table'],
+        });
         if (!reservation) {
             throw new NotFoundException('Reservation not found');
         }
@@ -69,13 +72,23 @@ export class ReservationsService {
     }
 
     async update(id: number, updateReservationDto: UpdateReservationDto) {
-        await this.findOne(id); // Verifica que la reserva exista
-        await this.reservationRepository.update(id, updateReservationDto);
+        const reservation = await this.reservationRepository.findOne({where: { id }}); // Verifica que la reserva exista
+    
+        // Preparamos el objeto de actualización
+        const updatedReservation = {
+            ...reservation, // Copiamos los datos existentes de la reserva
+            ...updateReservationDto,
+            table: { id: updateReservationDto.table }, // Referencia solo al ID de la mesa
+        };
+    
+        // Actualizamos la reserva
+        await this.reservationRepository.save(updatedReservation);
+    
         return this.findOne(id); // Retorna la reserva actualizada
     }
-
+    
     async remove(id: number) {
-        const reservation = await this.findOne(id);
+        const reservation = await this.reservationRepository.findOne({where: { id }});
         await this.reservationRepository.remove(reservation);
-    }*/
+    }
 }
