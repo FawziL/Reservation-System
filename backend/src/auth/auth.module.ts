@@ -7,15 +7,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User]),
-    JwtModule.register({ 
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' }, 
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService], // Si necesitas exportar el servicio para usarlo en otros módulos
+    imports: [
+        TypeOrmModule.forFeature([User]),
+        JwtModule.register({ 
+            secret: process.env.JWT_SECRET,
+            signOptions: { expiresIn: '60s' }, 
+        }),
+    ],
+    controllers: [AuthController],
+    providers: [AuthService, JwtStrategy],
+    exports: [AuthService], // Si necesitas exportar el servicio para usarlo en otros módulos
 })
 export class AuthModule {}

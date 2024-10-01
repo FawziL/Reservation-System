@@ -8,12 +8,13 @@ import { Table } from '../entities/table.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [
-    UsersModule,
-    NotificationsModule,
-    TypeOrmModule.forFeature([Reservation, Table]), // Aquí es donde importas las entidades
-  ],
-  controllers: [ReservationsController],
-  providers: [ReservationsService],
+    imports: [
+        UsersModule,
+        NotificationsModule,
+        TypeOrmModule.forFeature([Reservation, Table]),
+    ],
+    controllers: [ReservationsController],
+    providers: [ReservationsService],
 })
+
 export class ReservationsModule {}

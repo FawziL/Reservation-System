@@ -3,21 +3,21 @@ import { Reservation } from './reservation.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @Column()
-  username: string;
+    @Column()
+    username: string;
 
-  @Column({ unique: true })
-  email: string;
+    @Column({ unique: true })
+    email: string;
 
-  @Column()
-  password: string;
+    @Column()
+    password: string;
 
-  @Column({ default: false })
-  isAdmin: boolean;  // Campo para distinguir usuarios de administradores
+    @Column({ default: false })
+    isAdmin: boolean;  // Campo para distinguir usuarios de administradores
 
-  @OneToMany(() => Reservation, reservation => reservation.user)
-  reservations: Reservation[];
+    @OneToMany(() => Reservation, reservation => reservation.user)
+    reservations: Reservation[];
 }

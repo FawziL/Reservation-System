@@ -8,8 +8,9 @@ import { TablesModule } from './tables/tables.module';
 import { ReservationsModule } from './reservations/reservations.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, UsersModule, ReservationsModule, TablesModule],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [DatabaseModule, AuthModule, UsersModule, ReservationsModule, TablesModule],
+    controllers: [AppController],
+    providers: [AppService],
 })
+
 export class AppModule {}
