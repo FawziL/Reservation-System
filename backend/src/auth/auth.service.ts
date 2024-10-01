@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import {
+    Injectable,
+    ConflictException,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -18,12 +22,14 @@ export class AuthService {
         const { username, password, email } = createUserDto;
 
         // Verificar si el usuario ya existe
-        const existingUser = await this.userRepository.findOne({ where: { email } });
+        const existingUser = await this.userRepository.findOne({
+            where: { email },
+        });
         if (existingUser) {
             throw new ConflictException('Email already registered');
         }
 
-      // Hashear la contraseña
+        // Hashear la contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Crear un nuevo usuario
@@ -45,7 +51,11 @@ export class AuthService {
     }
 
     async login(user: User): Promise<{ access_token: string }> {
-        const payload = { username: user.username, sub: user.id, role: user.isAdmin };
+        const payload = {
+            username: user.username,
+            sub: user.id,
+            role: user.isAdmin,
+        };
         return {
             access_token: this.jwtService.sign(payload),
         };

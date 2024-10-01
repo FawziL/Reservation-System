@@ -1,6 +1,5 @@
 export class CheckAvailabilityDto {
-    date: Date; // O un tipo Date si lo prefieres
+    date: Date;
     tableNumber: string;
     seats: number;
 }
-  

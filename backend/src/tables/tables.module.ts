@@ -6,9 +6,7 @@ import { Table } from '../entities/table.entity';
 import { Reservation } from 'src/entities/reservation.entity';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Table, Reservation]),
-    ],
+    imports: [TypeOrmModule.forFeature([Table, Reservation])],
     controllers: [TablesController],
     providers: [TablesService],
 })

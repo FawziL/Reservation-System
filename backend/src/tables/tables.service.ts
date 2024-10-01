@@ -31,7 +31,7 @@ export class TablesService {
 
     async update(id: number, updateTableDto: UpdateTableDto) {
         await this.tableRepository.update(id, updateTableDto);
-        return this.findOne(id);  // Retornar la mesa actualizada
+        return this.findOne(id); // Retornar la mesa actualizada
     }
 
     async remove(id: number) {
@@ -57,8 +57,11 @@ export class TablesService {
         });
 
         // Filtra las mesas disponibles comparando con las reservas
-        const availableTables = tables.filter(table => 
-            !reservations.some(reservation => reservation.table.id === table.id)
+        const availableTables = tables.filter(
+            (table) =>
+                !reservations.some(
+                    (reservation) => reservation.table.id === table.id,
+                ),
         );
         return availableTables;
     }

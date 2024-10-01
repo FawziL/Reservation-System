@@ -16,7 +16,7 @@ export class User {
     password: string;
 
     @Column({ default: false })
-    isAdmin: boolean;  // Campo para distinguir usuarios de administradores
+    isAdmin: boolean;
 
     @OneToMany(() => Reservation, reservation => reservation.user)
     reservations: Reservation[];
