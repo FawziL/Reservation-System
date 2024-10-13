@@ -1,21 +1,19 @@
+"use client";  // Marca el componente como Cliente
 import { useState } from 'react';
-import api from '../services/api';
-import { useRouter } from 'next/router';
+import api from '../../services/api';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(null);
-    const router = useRouter();
+    const [error, setError] = useState<string | null>(null); 
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e:any) => {
         e.preventDefault();
         setError(null);
 
         try {
             const response = await api.post('/auth/login', { email, password });
             localStorage.setItem('token', response.data.token); // Guardar token
-            router.push('/dashboard'); // Redirigir después del login
         } catch (err) {
             setError('Invalid email or password');
         }

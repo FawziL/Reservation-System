@@ -1,6 +1,6 @@
+"use client";  // Marca el componente como Cliente
 import { useState } from 'react';
-import api from '../services/api';
-import { useRouter } from 'next/router';
+import api from '../../services/api';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -9,23 +9,20 @@ const Register = () => {
         password: ''
     });
     const [error, setError] = useState('');
-    const router = useRouter();
 
-    const handleChange = (e) => {
+    const handleChange = (e: any) => {
         setFormData({
         ...formData,
         [e.target.name]: e.target.value,
         });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
 
         try {
         const response = await api.post('/auth/register', formData);
         if (response.status === 201) {
-            // Redirigir al login después de un registro exitoso
-            router.push('/login');
         }
         } catch (error) {
         setError('Registration failed. Try again.');
