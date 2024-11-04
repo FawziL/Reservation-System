@@ -30,39 +30,39 @@ const Register = () => {
     };
 
   return (
-    <div>
+    <div className='container mt-6'>
         <h1>Register</h1>
-        <form onSubmit={handleSubmit}>
-            <div>
-            <label htmlFor="username">Username:</label>
+        <form onSubmit={handleSubmit} className='mt-3'>
+            <h2>Username:</h2>
             <input
                 type="text"
                 name="username"
+                placeholder="Username"
                 value={formData.username}
                 onChange={handleChange}
                 required
             />
-            </div>
-            <div>
-            <label htmlFor="email">Email:</label>
+
+            <h2>Email:</h2>
             <input
                 type="email"
                 name="email"
+                placeholder="Email" 
                 value={formData.email}
                 onChange={handleChange}
                 required
             />
-            </div>
-            <div>
-            <label htmlFor="password">Password:</label>
+
+            <h2>Password:</h2>
             <input
                 type="password"
                 name="password"
+                placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
                 required
             />
-            </div>
+
             {error && <p>{error}</p>}
             <button type="submit">Register</button>
         </form>

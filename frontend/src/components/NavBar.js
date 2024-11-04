@@ -1,33 +1,36 @@
-"use client"; // Esto asegura que el componente es un Client Component
+"use client";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import LogoutButton from "./LogoutButton";
+import { useAuth } from "../hooks/AuthContext";
 
 const Navbar = () => {
-    const { isLoggedIn } = useAuth();
+    const { isAuthenticated, logout } = useAuth();
     const [isClient, setIsClient] = useState(false);
 
-    // Verificar si estamos en el lado del cliente (necesario para el SSR de Next.js)
     useEffect(() => {
         setIsClient(true);
     }, []);
 
     return (
-        <nav className="bg-gray-800 p-4">
-            <div className="container mx-auto flex justify-between items-center">
-                <div className="text-white text-lg">
+        <nav className="bg-gray-800">
+            <div className="p-4">
+                <div className="flex justify-around">
                     <Link href="/">Home</Link>
                     <Link href="/about">About</Link>
-                    <Link href="/login">Login</Link>
-                    {isClient && !isLoggedIn && (
+                    {isClient && !isAuthenticated && (
                         <>
                             <Link href="/register">Register</Link>
+                            <Link href="/login">Login</Link>
+                        </>
+                    )}
+                    {isClient && isAuthenticated && (
+                        <>
+                            <Link href="/reservations">Reservations</Link>
+                            <a onClick={logout}>Logout</a>
                         </>
                     )}
                 </div>
-                {isClient && isLoggedIn && <LogoutButton />}
             </div>
         </nav>
     );

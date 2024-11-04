@@ -1,11 +1,13 @@
 "use client";  // Marca el componente como Cliente
 import { useState } from 'react';
 import api from '../../services/api';
+import { useAuth } from '../../hooks/AuthContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null); 
+    const { login } = useAuth();
 
     const handleSubmit = async (e:any) => {
         e.preventDefault();
@@ -13,23 +15,26 @@ const Login = () => {
 
         try {
             const response = await api.post('/auth/login', { email, password });
-            localStorage.setItem('token', response.data.token); // Guardar token
+            console.log(response.data.access_token);
+            login(response.data.access_token);
         } catch (err) {
             setError('Invalid email or password');
         }
     };
 
   return (
-      <div>
+      <div className='container mt-6'>
           <h1>Login</h1>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className='mt-3'>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
+                <h2>Email:</h2>
                 <input 
                     type="email" 
                     placeholder="Email" 
                     value={email} 
                     onChange={(e) => setEmail(e.target.value)} 
                 />
+                <h2>Password:</h2>
                 <input 
                     type="password" 
                     placeholder="Password" 

@@ -31,3 +31,84 @@ body {
     text-wrap: balance;
   }
 }
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #ffffff;
+  font-size: 28px;
+  padding: 10px;
+}
+form h2{
+  color: black;
+}
+
+/* Estilo para los campos de entrada */
+input {
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  color: black;
+}
+
+/* Estilo para el botón */
+button {
+  padding: 10px;
+  background-color: #0070f3; /* Color de fondo */
+  color: white; /* Color del texto */
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Cambiar el color del botón al pasar el mouse */
+button:hover {
+  background-color: #005bb5; /* Color más oscuro al pasar el mouse */
+}
+
+/* Estilo para mensajes de error */
+p {
+  color: red;
+  text-align: center;
+}
+
+a{
+  cursor: pointer;
+}
+.container {
+  @apply mx-auto px-4 py-8; /* Centrar y agregar relleno */
+}
+
+.title {
+  @apply text-3xl font-bold text-center mb-4; /* Título centrado */
+}
+
+.description {
+  @apply text-lg text-gray-700 text-center; /* Descripción centrada */
+}
+
+.card {
+  @apply bg-white shadow-lg rounded-lg p-6 my-4; /* Estilo para tarjetas */
+}
+
+.card-title {
+  @apply text-xl font-semibold mb-2 text-black; /* Título de la tarjeta en negro */
+}
+
+.card-content {
+  @apply text-gray-600; /* Contenido de la tarjeta */
+}
