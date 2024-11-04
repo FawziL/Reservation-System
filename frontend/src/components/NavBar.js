@@ -27,6 +27,7 @@ const Navbar = () => {
                     {isClient && isAuthenticated && (
                         <>
                             <Link href="/reservations">Reservations</Link>
+                            <Link href="/users">Users</Link>
                             <a onClick={logout}>Logout</a>
                         </>
                     )}
