@@ -1,6 +1,6 @@
 "use client";  // Marca el componente como Cliente
 import { useState } from 'react';
-import api from '../../services/api';
+import api from '../../../services/api';
 
 const Register = () => {
     const [formData, setFormData] = useState({

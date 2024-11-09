@@ -1,7 +1,7 @@
 "use client";  // Marca el componente como Cliente
 import { useState } from 'react';
-import api from '../../services/api';
-import { useAuth } from '../../hooks/AuthContext';
+import api from '../../../services/api';
+import { useAuth } from '../../../hooks/AuthContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');

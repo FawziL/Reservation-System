@@ -20,14 +20,16 @@ const Navbar = () => {
                     <Link href="/about">About</Link>
                     {isClient && !isAuthenticated && (
                         <>
-                            <Link href="/register">Register</Link>
-                            <Link href="/login">Login</Link>
+                            <Link href="/auth/register">Register</Link>
+                            <Link href="/auth/login">Login</Link>
                         </>
                     )}
                     {isClient && isAuthenticated && (
-                        <>
-                            <Link href="/reservations">Reservations</Link>
-                            <Link href="/users">Users</Link>
+                        <>  
+                            <Link href="/reservations">Reservations User</Link>
+                            <Link href="/admin/reservations">Reservations Admin</Link>
+                            <Link href="/admin/users">Users</Link>
+                            <Link href="/admin/tables">Tables</Link>
                             <a onClick={logout}>Logout</a>
                         </>
                     )}
