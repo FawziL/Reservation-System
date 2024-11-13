@@ -2,15 +2,14 @@
 import { useState, useEffect } from 'react';
 import api from '../../../services/api';
 
-interface User {
+interface Tables {
     id: number;
-    username: string;
-    email: string;
-    isAdmin: boolean;
+    tableNumber: string;
+    seats: number;
 }
 
 const Tables = () => {
-    const [tables, setTables] = useState<User[]>([]);
+    const [tables, setTables] = useState<Tables[]>([]);
     const [error, setError] = useState<string | null>(null); 
 
     useEffect(() => {
@@ -22,7 +21,6 @@ const Tables = () => {
                         Authorization: `Bearer ${token}` // Añade el token en el encabezado
                     }
                 });
-                console.log(response.data)
                 setTables(response.data);
             } catch (err) {
                 setError('Invalid token');
@@ -31,6 +29,26 @@ const Tables = () => {
 
         fetchTables();
     }, []);
+
+    const deleteTable = async (id: number) => {
+        const token = localStorage.getItem("token");
+        try {
+          await api.delete(`/tables/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setTables(tables.filter((table) => table.id !== id)); // Actualiza la lista local
+        } catch (err) {
+          console.error("Error deleting table:", err);
+          setError("Error deleting table.");
+        }
+    };
+
+    const editTable = (id: number) => {
+        // Redirigir a la página de edición de la tabla
+        window.location.href = `/admin/tables/${id}/edit`; // Actualiza la ruta según tu estructura
+    };
 
     if (error) {
         return <div>{error}</div>;
@@ -45,11 +63,22 @@ const Tables = () => {
                 <div className='flex justify-around'>
                     {tables.map((tables) => (
                         <div key={tables.id} className='bg-slate-500 rounded-lg p-2 pt-0 w-72'>
-                            <h2>Name: {tables.username}</h2>
+                            <h2>Name of table: {tables.tableNumber}</h2>
                             <p>ID: {tables.id}</p>
-                            <p>Email: {tables.email}</p>
-                            <p>Admin: {tables.isAdmin==true ? "True": "False"}</p>
-                        </div>
+                            <p>Seats: {tables.seats}</p>
+                            <button
+                            className="bg-blue-500 text-white px-4 py-1 rounded"
+                            onClick={() => editTable(tables.id)}
+                            >
+                            Edit
+                            </button>
+                            <button
+                                className="bg-red-500 text-white px-4 py-1 rounded"
+                                onClick={() => deleteTable(tables.id)}
+                                >
+                                Delete
+                                </button>
+                            </div>
                     ))}
                 </div>
             )}

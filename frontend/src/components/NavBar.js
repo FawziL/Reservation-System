@@ -34,6 +34,7 @@ const Navbar = () => {
                                     <Link href="/admin/reservations">Reservations Admin</Link>
                                     <Link href="/admin/users">Users</Link>
                                     <Link href="/admin/tables">Tables</Link>
+                                    <Link href="/admin/tables/create">Create Table</Link>
                                 </>
                             )}
                             <a onClick={logout} className="text-red-500">Logout</a>
