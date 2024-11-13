@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/AuthContext";
 
 const Navbar = () => {
-    const { isAuthenticated, logout } = useAuth();
+    const { user, logout } = useAuth();
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
@@ -18,19 +18,25 @@ const Navbar = () => {
                 <div className="flex justify-around">
                     <Link href="/">Home</Link>
                     <Link href="/about">About</Link>
-                    {isClient && !isAuthenticated && (
+                    {isClient && !user && (
                         <>
                             <Link href="/auth/register">Register</Link>
                             <Link href="/auth/login">Login</Link>
                         </>
                     )}
-                    {isClient && isAuthenticated && (
-                        <>  
+                    {isClient && user && (
+                        <>
                             <Link href="/reservations">Reservations User</Link>
-                            <Link href="/admin/reservations">Reservations Admin</Link>
-                            <Link href="/admin/users">Users</Link>
-                            <Link href="/admin/tables">Tables</Link>
-                            <a onClick={logout}>Logout</a>
+                            
+                            {/* Rutas exclusivas para administradores */}
+                            {user.admin && (
+                                <>
+                                    <Link href="/admin/reservations">Reservations Admin</Link>
+                                    <Link href="/admin/users">Users</Link>
+                                    <Link href="/admin/tables">Tables</Link>
+                                </>
+                            )}
+                            <a onClick={logout} className="text-red-500">Logout</a>
                         </>
                     )}
                 </div>
@@ -40,3 +46,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

@@ -1,32 +1,34 @@
 "use client"
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import {jwtDecode} from 'jwt-decode';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const router = useRouter();
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        setIsAuthenticated(!!token);
-    }, []);
+    const [user, setUser] = useState(null);
 
     const login = (token) => {
+        // Decodifica el token para obtener datos del usuario
+        const decodedUser = jwtDecode(token);
+        setUser(decodedUser);
+        // Guarda el token en el localStorage o en cookies
         localStorage.setItem('token', token);
-        setIsAuthenticated(true);
-        router.push('/');
     };
 
     const logout = () => {
+        setUser(null);
         localStorage.removeItem('token');
-        setIsAuthenticated(false);
-        router.push('/login');
     };
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            setUser(jwtDecode(token));
+        }
+    }, []);
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

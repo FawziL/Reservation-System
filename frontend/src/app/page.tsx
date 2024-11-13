@@ -1,9 +1,13 @@
-export default function Home() {
+"use client";
+import { useAuth } from "../hooks/AuthContext";
+const Home = () => {
+  const { user } = useAuth();
   return (
     <>
       <main className="flex min-h-screen flex-col items-center justify-center p-24">
-        <h1 className="text-4xl font-bold">Welcome to our App</h1>
+        <h1>Welcome {user?.username}</h1>
       </main>
     </>
   );
 }
+export default Home;
