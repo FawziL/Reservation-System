@@ -1,6 +1,7 @@
 "use client";  // Marca el componente como Cliente
 import { useState, useEffect } from 'react';
 import api from '../../../services/api';
+import { useRouter } from "next/navigation";
 
 interface Tables {
     id: number;
@@ -11,6 +12,7 @@ interface Tables {
 const Tables = () => {
     const [tables, setTables] = useState<Tables[]>([]);
     const [error, setError] = useState<string | null>(null); 
+    const router = useRouter();
 
     useEffect(() => {
         const fetchTables = async () => {
@@ -46,8 +48,8 @@ const Tables = () => {
     };
 
     const editTable = (id: number) => {
-        // Redirigir a la página de edición de la tabla
-        window.location.href = `/admin/tables/${id}/edit`; // Actualiza la ruta según tu estructura
+        router.push(`/admin/tables/${id}/edit`);
+
     };
 
     if (error) {
@@ -67,10 +69,10 @@ const Tables = () => {
                             <p>ID: {tables.id}</p>
                             <p>Seats: {tables.seats}</p>
                             <button
-                            className="bg-blue-500 text-white px-4 py-1 rounded"
-                            onClick={() => editTable(tables.id)}
-                            >
-                            Edit
+                                className="bg-blue-500 text-white px-4 py-1 rounded"
+                                onClick={() => editTable(tables.id)}
+                                >
+                                Edit
                             </button>
                             <button
                                 className="bg-red-500 text-white px-4 py-1 rounded"

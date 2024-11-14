@@ -1,6 +1,7 @@
 "use client";  // Marca el componente como Cliente
 import { useState, useEffect } from 'react';
 import api from '../../../services/api';
+import { useRouter } from "next/navigation";
 
 interface User {
     id: number;
@@ -26,6 +27,7 @@ interface Reservation {
 const Reservations = () => {
     const [reservations, setReservations] = useState<Reservation[]>([]);
     const [error, setError] = useState<string | null>(null); 
+    const router = useRouter();
 
     useEffect(() => {
         const fetchReservations = async () => {
@@ -40,6 +42,25 @@ const Reservations = () => {
 
         fetchReservations();
     }, []);
+
+    const deleteReservation = async (id: number) => {
+        const token = localStorage.getItem("token");
+        try {
+            await api.delete(`/reservations/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setReservations(reservations.filter((reservation) => reservation.id !== id));
+        } catch (err) {
+            console.error("Error deleting reservation:", err);
+            setError("Error deleting reservation.");
+        }
+    };
+
+    const editReservation = (id: number) => {
+        router.push(`/admin/reservations/${id}/edit`);
+    };
 
     if (error) {
         return <div>{error}</div>;
@@ -58,6 +79,18 @@ const Reservations = () => {
                             <p>Date: {new Date(reservation.reservationDate).toLocaleString()}</p>
                             <p>Status: {reservation.status}</p>
                             <p>Table: {reservation.table.tableNumber} (Seats: {reservation.table.seats})</p>
+                            <button
+                                className="bg-blue-500 text-white px-4 py-1 rounded"
+                                onClick={() => editReservation(reservation.id)}
+                                >
+                                Edit
+                            </button>
+                            <button
+                                className="bg-red-500 text-white px-4 py-1 rounded"
+                                onClick={() => deleteReservation(reservation.id)}
+                                >
+                                Delete
+                            </button>
                         </div>
                     ))}
                 </div>

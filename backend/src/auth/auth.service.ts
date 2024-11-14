@@ -53,7 +53,7 @@ export class AuthService {
     async login(user: User): Promise<{ access_token: string }> {
         const payload = {
             username: user.username,
-            sub: user.id,
+            userID: user.id,
             admin: user.isAdmin,
         };
         return {
