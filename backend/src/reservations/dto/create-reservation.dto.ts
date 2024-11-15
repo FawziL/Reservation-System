@@ -11,7 +11,7 @@ export class CreateReservationDto {
         example: '2024-10-02T18:00:00Z',
         description: 'Fecha y hora de la reserva',
     })
-    date: Date;
+    reservationDate: Date;
 
     @ApiProperty({
         example: 5,

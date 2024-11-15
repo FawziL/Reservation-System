@@ -27,6 +27,7 @@ const Navbar = () => {
                     {isClient && user && (
                         <>
                             <Link href="/reservations">Reservations User</Link>
+                            <Link href="/reservations/create">Create Reservation</Link>
                             
                             {/* Rutas exclusivas para administradores */}
                             {user.admin && (

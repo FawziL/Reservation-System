@@ -1,6 +1,8 @@
 "use client";  // Marca el componente como Cliente
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
+import { useAuth } from "../../hooks/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface User {
     id: number;
@@ -17,7 +19,7 @@ interface Table {
 
 interface Reservation {
     id: number;
-    reservationDate: string; // Usamos string para manejar la fecha
+    reservationDate: string; 
     status: string;
     user: User;
     table: Table;
@@ -25,21 +27,29 @@ interface Reservation {
 
 const Reservations = () => {
     const [reservations, setReservations] = useState<Reservation[]>([]);
-    const [error, setError] = useState<string | null>(null); 
+    const [error, setError] = useState<string | null>(null);
+    const { user } = useAuth();
+    const router = useRouter();
 
     useEffect(() => {
         const fetchReservations = async () => {
+            
+            if (user?.userID){
+            const token = localStorage.getItem("token");
             try {
-                const response = await api.get('/reservations');
-                console.log(response.data)
-                setReservations(response.data);
+                const response = await api.get(`/reservations/${user.userID}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setReservations(Array.isArray(response.data) ? response.data : [response.data]);
+                router.push("/reservations");
             } catch (err) {
-                setError('Invalid email or password');
-            }
+                setError("Problem fetching reservations");
+            }}        
         };
-
         fetchReservations();
-    }, []);
+    }, [user?.userID]);
 
     if (error) {
         return <div>{error}</div>;

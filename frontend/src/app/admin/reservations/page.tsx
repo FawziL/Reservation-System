@@ -24,7 +24,7 @@ interface Reservation {
     table: Table;
 }
 
-const Reservations = () => {
+const AdminReservations = () => {
     const [reservations, setReservations] = useState<Reservation[]>([]);
     const [error, setError] = useState<string | null>(null); 
     const router = useRouter();
@@ -99,4 +99,4 @@ const Reservations = () => {
     );
 };
 
-export default Reservations;
+export default AdminReservations;

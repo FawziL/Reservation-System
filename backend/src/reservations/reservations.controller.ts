@@ -33,6 +33,15 @@ export class ReservationsController {
         return this.reservationsService.findAll();
     }
 
+    @ApiOperation({ summary: 'Obtener una reserva por ID de usuario' })
+    @ApiParam({ name: 'userID', description: 'ID del usuario de la reserva', type: 'string' })
+    @ApiResponse({ status: 200, description: 'Reserva encontrada con éxito.' })
+    @ApiResponse({ status: 404, description: 'Reserva no encontrada.' })
+    @Get(':userID')
+    findByUserID(@Param('userID') userID: number) {
+        return this.reservationsService.findByUserID(userID);
+    }
+
     @ApiOperation({ summary: 'Obtener una reserva por ID' })
     @ApiParam({ name: 'id', description: 'ID de la reserva', type: 'string' })
     @ApiResponse({ status: 200, description: 'Reserva encontrada con éxito.' })

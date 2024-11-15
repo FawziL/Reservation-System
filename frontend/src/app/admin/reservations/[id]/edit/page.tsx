@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "../../../../../services/api";
 
@@ -9,33 +9,18 @@ interface Params {
 
 const EditReservation = ({ params }: { params: Params }) => {
     const { id } = params; // Obtiene el ID de la URL
-    const [reservation, setReservation] = useState({ date: "", table: "" });
+    const [formData, setFormData] = useState({
+        reservationDate: '',
+        table: ''
+    });
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
-
-    /*useEffect(() => {
-        const fetchReservation = async () => {
-            const token = localStorage.getItem("token");
-            try {
-                const response = await api.get(`/reservations/${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setReservation(response.data);
-            } catch (err) {
-                setError("Error fetching reservation data.");
-            }
-        };
-
-        fetchReservation();
-    }, [id]);*/
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
         try {
-            await api.patch(`/reservations/${id}`, reservation, {
+            await api.patch(`/reservations/${id}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -47,8 +32,10 @@ const EditReservation = ({ params }: { params: Params }) => {
     };
 
     const handleChange = (e: any) => {
-        const { name, value } = e.target;
-        setReservation({ ...reservation, [name]: value });
+        setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+        });
     };
 
     if (error) {
@@ -63,9 +50,9 @@ const EditReservation = ({ params }: { params: Params }) => {
             <h2>Date:</h2>
             <input
                 type="date"
-                name="date"
+                name="reservationDate"
                 placeholder="Date" 
-                value={reservation.date}
+                value={formData.reservationDate}
                 onChange={handleChange}
             />
 
@@ -74,7 +61,7 @@ const EditReservation = ({ params }: { params: Params }) => {
                 type="text"
                 name="table"
                 placeholder="table"
-                value={reservation.table}
+                value={formData.table}
                 onChange={handleChange}
             />
 

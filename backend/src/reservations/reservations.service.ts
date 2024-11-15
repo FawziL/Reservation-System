@@ -26,7 +26,6 @@ export class ReservationsService {
         if (!user) {
             throw new NotFoundException('User not found');
         }
-        console.log(createReservationDto.table);
 
         const table = await this.tableRepository.findOne({
             where: { id: createReservationDto.table },
@@ -36,7 +35,7 @@ export class ReservationsService {
         }
 
         const reservation = this.reservationRepository.create({
-            reservationDate: createReservationDto.date,
+            reservationDate: createReservationDto.reservationDate,
             user: user,
             table: { id: createReservationDto.table },
         });
@@ -45,11 +44,11 @@ export class ReservationsService {
             await this.reservationRepository.save(reservation);
 
         // Enviar notificación después de crear la reserva
-        await this.NotificationsService.sendEmail({
+        /*await this.NotificationsService.sendEmail({
             to: user.email, // Usa el correo del usuario
             subject: 'Reservation Confirmation',
             text: `Your reservation for table ${table.tableNumber} on ${savedReservation.reservationDate} has been confirmed.`,
-        });
+        });*/
 
         return savedReservation;
     }
@@ -58,6 +57,19 @@ export class ReservationsService {
         return this.reservationRepository.find({
             relations: ['user', 'table'],
         });
+    }
+
+    async findByUserID(userID: number) {
+        const reservations = await this.reservationRepository.find({
+            where: { user: { id: userID } },
+            relations: ['user', 'table'],
+        });
+    
+        if (!reservations || reservations.length === 0) {
+            throw new NotFoundException('No reservations found for this user');
+        }
+    
+        return reservations;
     }
 
     async findOne(id: number) {
@@ -72,19 +84,28 @@ export class ReservationsService {
     }
 
     async update(id: number, updateReservationDto: UpdateReservationDto) {
-        const reservation = await this.reservationRepository.findOne({where: { id }}); // Verifica que la reserva exista
+        const reservation = await this.reservationRepository.findOne({
+            where: { id },
+        });
     
-        // Preparamos el objeto de actualización
+        if (!reservation) {
+            throw new NotFoundException('Reservation not found');
+        }
+       
+        // Filtra los campos vacíos y mezcla con los datos existentes
         const updatedReservation = {
-            ...reservation, // Copiamos los datos existentes de la reserva
-            ...updateReservationDto,
-            table: { id: updateReservationDto.table }, // Referencia solo al ID de la mesa
+            ...reservation, 
+            ...Object.fromEntries(
+                Object.entries(updateReservationDto).filter(
+                    ([_, value]) => value !== "" && value !== null && value !== undefined // Ignora valores vacíos
+                )
+            ),
+            table: updateReservationDto.table ? { id: updateReservationDto.table } : reservation.table, 
         };
     
-        // Actualizamos la reserva
         await this.reservationRepository.save(updatedReservation);
     
-        return this.findOne(id); // Retorna la reserva actualizada
+        return this.findOne(id);
     }
     
     async remove(id: number) {
