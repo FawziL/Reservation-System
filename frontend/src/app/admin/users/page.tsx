@@ -1,6 +1,7 @@
 "use client";  // Marca el componente como Cliente
 import { useState, useEffect } from 'react';
 import api from '../../../services/api';
+import { useRouter } from "next/navigation";
 
 interface User {
     id: number;
@@ -12,6 +13,7 @@ interface User {
 const Users = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [error, setError] = useState<string | null>(null); 
+    const router = useRouter();
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -32,6 +34,25 @@ const Users = () => {
         fetchUsers();
     }, []);
 
+    const deleteTable = async (id: number) => {
+        const token = localStorage.getItem("token");
+        try {
+          await api.delete(`/users/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setUsers(users.filter((user) => user.id !== id)); // Actualiza la lista local
+        } catch (err) {
+          console.error("Error deleting user:", err);
+          setError("Error deleting user.");
+        }
+    };
+    const editTable = (id: number) => {
+        router.push(`/admin/users/${id}/edit`);
+
+    };
+
     if (error) {
         return <div>{error}</div>;
     }
@@ -49,6 +70,18 @@ const Users = () => {
                             <p>ID: {users.id}</p>
                             <p>Email: {users.email}</p>
                             <p>Admin: {users.isAdmin==true ? "True": "False"}</p>
+                            <button
+                                className="bg-blue-500 text-white px-4 py-1 rounded"
+                                onClick={() => editTable(users.id)}
+                                >
+                                Edit
+                            </button>
+                            <button
+                                className="bg-red-500 text-white px-4 py-1 rounded"
+                                onClick={() => deleteTable(users.id)}
+                                >
+                                Delete
+                            </button>
                         </div>
                     ))}
                 </div>

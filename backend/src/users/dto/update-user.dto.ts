@@ -23,4 +23,11 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
         required: false,
     })
     password?: string;
+
+    @ApiProperty({
+        example: 'true or false',
+        description: 'Propiedad de admin',
+        required: false,
+    })
+    isAdmin?: boolean;
 }

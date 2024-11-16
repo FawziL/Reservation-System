@@ -23,7 +23,26 @@ export class UsersService {
 
     // Actualizar un usuario
     async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-        await this.userRepository.update(id, updateUserDto);
+        // Busca el usuario actual en la base de datos
+        const existingUser = await this.findOne(id);
+        if (!existingUser) {
+            throw new Error(`User with ID ${id} not found`);
+        }
+        console.log(updateUserDto)
+        
+
+        // Combina los valores actuales con los nuevos valores del DTO
+        const updatedData = Object.entries(updateUserDto).reduce((acc, [key, value]) => {
+            if (value !== undefined && value !== '') {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+    
+        // Actualiza el usuario con los datos combinados
+        await this.userRepository.update(id, updatedData);
+    
+        // Retorna el usuario actualizado
         return this.findOne(id);
     }
 
