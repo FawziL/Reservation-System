@@ -10,7 +10,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body>
+            <body className='h-screen bg-slate-600 flex h-full flex-col items-center justify-center p-24'>
                 <AuthProvider>
                     <Navbar />
                     {children}
