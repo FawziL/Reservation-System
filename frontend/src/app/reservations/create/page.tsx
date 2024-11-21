@@ -23,9 +23,9 @@ const CreateReservation = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-
+        const adjustedDate = new Date(formData.reservationDate).toISOString();
         try {
-        const response = await api.post('/reservations', formData);
+        const response = await api.post('/reservations', {...formData, reservationDate: adjustedDate,});
         if (response.status === 201) {
             router.push("/reservations");
         }
@@ -41,7 +41,7 @@ const CreateReservation = () => {
 
             <h2>Date:</h2>
             <input
-                type="date"
+                type="datetime-local"
                 name="reservationDate"
                 placeholder="Date" 
                 value={formData.reservationDate}
