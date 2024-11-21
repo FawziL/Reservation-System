@@ -54,9 +54,19 @@ export class ReservationsService {
     }
 
     async findAll() {
-        return this.reservationRepository.find({
+        const reservations = await this.reservationRepository.find({
             relations: ['user', 'table'],
         });
+
+        return reservations.map((reservation) => ({
+            ...reservation,
+            user: {
+                id: reservation.user.id,
+                username: reservation.user.username,
+                email: reservation.user.email,
+            },
+            table: reservation.table, 
+        }));
     }
 
     async findByUserID(userID: number) {
@@ -109,7 +119,14 @@ export class ReservationsService {
     }
     
     async remove(id: number) {
-        const reservation = await this.reservationRepository.findOne({where: { id }});
+        const reservation = await this.reservationRepository.findOne({
+            where: { id },
+        });
+
+        if (!reservation) {
+            throw new NotFoundException('Reservation not found');
+        }
+
         await this.reservationRepository.remove(reservation);
     }
 }
