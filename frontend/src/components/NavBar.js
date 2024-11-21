@@ -24,7 +24,7 @@ const Navbar = () => {
                     className="p-2 focus:outline-none"
                     onClick={toggleSidebar}
                 >
-                    <span className="material-icons">menu</span>
+                    <span className="material-icons">Menu</span>
                 </button>
                 <h1 className="text-lg font-bold">Navbar</h1>
             </div>

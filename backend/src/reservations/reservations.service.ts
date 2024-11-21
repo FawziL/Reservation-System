@@ -40,15 +40,21 @@ export class ReservationsService {
             table: { id: createReservationDto.table },
         });
 
-        const savedReservation =
-            await this.reservationRepository.save(reservation);
+        const savedReservation = await this.reservationRepository.save(reservation);
+
+        const fecha = new Date(savedReservation.reservationDate);
+        const anio = fecha.getFullYear();
+        const mes = fecha.getMonth() + 1; 
+        const dia = fecha.getDate();
+        const horas = fecha.getHours();
+        const minutos = fecha.getMinutes();
 
         // Enviar notificación después de crear la reserva
-        /*await this.NotificationsService.sendEmail({
-            to: user.email, // Usa el correo del usuario
+        await this.NotificationsService.sendEmail({
+            to: user.email,
             subject: 'Reservation Confirmation',
-            text: `Your reservation for table ${table.tableNumber} on ${savedReservation.reservationDate} has been confirmed.`,
-        });*/
+            text: `Your reservation for table ${table.tableNumber} on ${dia}/${mes}/${anio} ${horas}:${minutos} has been confirmed.`,
+        });
 
         return savedReservation;
     }

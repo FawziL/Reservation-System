@@ -46,6 +46,7 @@ const CreateReservation = () => {
                 placeholder="Date" 
                 value={formData.reservationDate}
                 onChange={handleChange}
+                min={new Date().toISOString().slice(0, 16)} // Fecha mínima: ahora
                 required
             />
 
