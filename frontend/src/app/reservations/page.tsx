@@ -1,6 +1,6 @@
-"use client";  // Marca el componente como Cliente
-import { useState, useEffect } from 'react';
-import api from '../../services/api';
+"use client";
+import { useState, useEffect } from "react";
+import api from "../../services/api";
 import { useAuth } from "../../hooks/AuthContext";
 import { useRouter } from "next/navigation";
 
@@ -19,7 +19,7 @@ interface Table {
 
 interface Reservation {
     id: number;
-    reservationDate: string; 
+    reservationDate: string;
     status: string;
     user: User;
     table: Table;
@@ -33,20 +33,27 @@ const Reservations = () => {
 
     useEffect(() => {
         const fetchReservations = async () => {
-            
-            if (user?.userID){
-            const token = localStorage.getItem("token");
-            try {
-                const response = await api.get(`/reservations/${user.userID}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setReservations(Array.isArray(response.data) ? response.data : [response.data]);
-                router.push("/reservations");
-            } catch (err) {
-                setError("Problem fetching reservations");
-            }}        
+            if (user?.userID) {
+                const token = localStorage.getItem("token");
+                try {
+                    const response = await api.get(
+                        `/reservations/${user.userID}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+                    setReservations(
+                        Array.isArray(response.data)
+                            ? response.data
+                            : [response.data]
+                    );
+                    router.push("/reservations");
+                } catch (err) {
+                    setError("Problem fetching reservations");
+                }
+            }
         };
         fetchReservations();
     }, [user?.userID]);
@@ -56,20 +63,57 @@ const Reservations = () => {
     }
 
     return (
-        <div className="container mt-6">
-            <h1>Reservations</h1>
+        <div className="container mx-auto mt-6 p-4">
+            <h1 className="text-2xl font-bold mb-4">Reservations</h1>
             {reservations.length === 0 ? (
-                <p>No reservations found.</p>
+                <p className="text-gray-500">No reservations found.</p>
             ) : (
-                <div className='flex justify-around'>
-                    {reservations.map((reservation) => (
-                        <div key={reservation.id} className='bg-slate-500 rounded-lg p-2 pt-0 w-48'>
-                            <h2>Reservation for {reservation.user.username}</h2>
-                            <p>Date: {new Date(reservation.reservationDate).toLocaleString()}</p>
-                            <p>Status: {reservation.status}</p>
-                            <p>Table: {reservation.table.tableNumber} (Seats: {reservation.table.seats})</p>
-                        </div>
-                    ))}
+                <div className="flex justify-around">
+                    <table className="w-5/6 bg-gray-800 shadow-md rounded-md overflow-hidden">
+                        <thead className="text-white">
+                            <tr>
+                                <th className="py-2 px-4 text-left">User</th>
+                                <th className="py-2 px-4 text-left">
+                                    Reservation Date
+                                </th>
+                                <th className="py-2 px-4 text-left">Status</th>
+                                <th className="py-2 px-4 text-left">
+                                    Table Number
+                                </th>
+                                <th className="py-2 px-4 text-left">Seats</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {reservations.map((reservation, index) => (
+                                <tr
+                                    key={reservation.id}
+                                    className={`${
+                                        index % 2 === 0
+                                            ? "bg-gray-100"
+                                            : "bg-white"
+                                    } hover:bg-gray-200`}
+                                >
+                                    <td className="py-2 px-4 text-gray-700">
+                                        {reservation.user.username}
+                                    </td>
+                                    <td className="py-2 px-4 text-gray-700">
+                                        {new Date(
+                                            reservation.reservationDate
+                                        ).toLocaleString()}
+                                    </td>
+                                    <td className="py-2 px-4 text-gray-700">
+                                        {reservation.status}
+                                    </td>
+                                    <td className="py-2 px-4 text-gray-700">
+                                        {reservation.table.tableNumber}
+                                    </td>
+                                    <td className="py-2 px-4 text-gray-700">
+                                        {reservation.table.seats}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
         </div>

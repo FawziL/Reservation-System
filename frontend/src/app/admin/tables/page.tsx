@@ -1,6 +1,6 @@
-"use client";  // Marca el componente como Cliente
-import { useState, useEffect } from 'react';
-import api from '../../../services/api';
+"use client"; // Marca el componente como Cliente
+import { useState, useEffect } from "react";
+import api from "../../../services/api";
 import { useRouter } from "next/navigation";
 
 interface Tables {
@@ -11,21 +11,21 @@ interface Tables {
 
 const Tables = () => {
     const [tables, setTables] = useState<Tables[]>([]);
-    const [error, setError] = useState<string | null>(null); 
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
         const fetchTables = async () => {
-            const token = localStorage.getItem('token'); 
+            const token = localStorage.getItem("token");
             try {
-                const response = await api.get('/tables', {
+                const response = await api.get("/tables", {
                     headers: {
-                        Authorization: `Bearer ${token}` // Añade el token en el encabezado
-                    }
+                        Authorization: `Bearer ${token}`, // Añade el token en el encabezado
+                    },
                 });
                 setTables(response.data);
             } catch (err) {
-                setError('Invalid token');
+                setError("Invalid token or error fetching tables.");
             }
         };
 
@@ -35,21 +35,20 @@ const Tables = () => {
     const deleteTable = async (id: number) => {
         const token = localStorage.getItem("token");
         try {
-          await api.delete(`/tables/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setTables(tables.filter((table) => table.id !== id)); // Actualiza la lista local
+            await api.delete(`/tables/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setTables(tables.filter((table) => table.id !== id)); // Actualiza la lista local
         } catch (err) {
-          console.error("Error deleting table:", err);
-          setError("Error deleting table.");
+            console.error("Error deleting table:", err);
+            setError("Error deleting table.");
         }
     };
 
     const editTable = (id: number) => {
         router.push(`/admin/tables/${id}/edit`);
-
     };
 
     if (error) {
@@ -60,28 +59,61 @@ const Tables = () => {
         <div className="container mt-6">
             <h1>Tables</h1>
             {tables.length === 0 ? (
-                <p>No Tables found.</p>
+                <p className="text-2xl font-bold mb-4 text-center">
+                    No Tables found.
+                </p>
             ) : (
-                <div className='flex justify-around'>
-                    {tables.map((tables) => (
-                        <div key={tables.id} className='bg-slate-500 rounded-lg p-2 pt-0 w-72'>
-                            <h2>Name of table: {tables.tableNumber}</h2>
-                            <p>ID: {tables.id}</p>
-                            <p>Seats: {tables.seats}</p>
-                            <button
-                                className="bg-blue-500 text-white px-4 py-1 rounded"
-                                onClick={() => editTable(tables.id)}
+                <div className="flex justify-around">
+                    <table className="w-3/8 bg-gray-800 shadow-md rounded-lg overflow-hidden text-left">
+                        <thead className="text-white">
+                            <tr>
+                                <th className="py-2 px-4 border-b">
+                                    Table Number
+                                </th>
+                                <th className="py-2 px-4 border-b">ID</th>
+                                <th className="py-2 px-4 border-b">Seats</th>
+                                <th className="py-2 px-4 border-b">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tables.map((table, index) => (
+                                <tr
+                                    key={table.id}
+                                    className={`${
+                                        index % 2 === 0
+                                            ? "bg-gray-100"
+                                            : "bg-white"
+                                    } hover:bg-gray-200`}
                                 >
-                                Edit
-                            </button>
-                            <button
-                                className="bg-red-500 text-white px-4 py-1 rounded"
-                                onClick={() => deleteTable(tables.id)}
-                                >
-                                Delete
-                                </button>
-                            </div>
-                    ))}
+                                    <td className="py-2 px-4 border-b text-gray-800">
+                                        {table.tableNumber}
+                                    </td>
+                                    <td className="py-2 px-4 border-b text-gray-800">
+                                        {table.id}
+                                    </td>
+                                    <td className="py-2 px-4 border-b text-gray-800">
+                                        {table.seats}
+                                    </td>
+                                    <td className="py-2 px-4 border-b">
+                                        <button
+                                            className="bg-blue-500 text-white px-4 py-1 rounded mr-2"
+                                            onClick={() => editTable(table.id)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="bg-red-500 text-white px-4 py-1 rounded"
+                                            onClick={() =>
+                                                deleteTable(table.id)
+                                            }
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
         </div>
