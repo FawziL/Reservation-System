@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import api from '../../../services/api';
 import { useAuth } from '../../../hooks/AuthContext';
+import { toast } from 'react-toastify';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -18,6 +19,10 @@ const Login = () => {
             console.log(response.data.access_token);
             login(response.data.access_token);
         } catch (err) {
+            toast.error("Invalid email or password", {
+                position: "top-right",
+                autoClose: 3000,
+            });
             setError('Invalid email or password');
         }
     };

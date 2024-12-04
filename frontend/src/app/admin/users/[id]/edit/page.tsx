@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "../../../../../services/api";
+import { toast } from 'react-toastify';
 
 interface Params {
     id: string;
@@ -21,13 +22,24 @@ const EditReservation = ({ params }: { params: Params }) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
         try {
-            await api.patch(`/users/${id}`, formData, {
+            const response = await api.patch(`/users/${id}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            router.push("/admin/users"); // Redirige de vuelta a la lista de usuarios
-        } catch (err) {
+            if (response.status === 200) {
+                toast.success(`Se ha modificado el usuario con éxito! 
+                    Status: ${response.statusText}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                router.push("/admin/users");
+            }
+        } catch (err:any) {
+            toast.error(`${err.response.statusText}`, {
+                position: "top-right",
+                autoClose: 3000,
+            });
             setError("Error updating user.");
         }
     };

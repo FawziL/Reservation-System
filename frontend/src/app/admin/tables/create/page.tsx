@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import api from '../../../../services/api';
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 const Login = () => {
     const [tableNumber, setTableNumber] = useState('');
@@ -15,9 +16,21 @@ const Login = () => {
 
         try {
             const response = await api.post('/tables', { tableNumber, seats });
-            console.log(response.data);
-            router.push("/admin/tables");
-        } catch (err) {
+            if (response.status === 201) {
+                toast.success(`Se ha agregado la mesa con éxito! 
+                    Status: ${response.statusText}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                router.push("/admin/tables");
+            }
+        } catch (err:any) {
+            toast.error(
+                `Error adding table! 
+                Status: ${err.response.statusText}`, {
+                position: "top-right",
+                autoClose: 3000,
+            });
             setError('Invalid data');
         }
     };

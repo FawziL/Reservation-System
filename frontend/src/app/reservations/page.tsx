@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import api from "../../services/api";
 import { useAuth } from "../../hooks/AuthContext";
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 interface User {
     id: number;
@@ -50,7 +51,11 @@ const Reservations = () => {
                             : [response.data]
                     );
                     router.push("/reservations");
-                } catch (err) {
+                } catch (err:any) {
+                    toast.error(`${err.response.statusText}: ${err.message}`, {
+                        position: "top-right",
+                        autoClose: 3000,
+                    });
                     setError("Problem fetching reservations");
                 }
             }

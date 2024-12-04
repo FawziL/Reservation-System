@@ -1,6 +1,7 @@
 "use client";  // Marca el componente como Cliente
 import { useState } from 'react';
 import api from '../../../services/api';
+import { toast } from 'react-toastify';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -25,6 +26,10 @@ const Register = () => {
         if (response.status === 201) {
         }
         } catch (error) {
+            toast.error("Registration failed. Try again.", {
+                position: "top-right",
+                autoClose: 3000,
+            });
         setError('Registration failed. Try again.');
         }
     };

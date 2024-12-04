@@ -59,6 +59,13 @@ form h2{
   text-align: start;
   color: black;
 }
+select{
+  color: black;
+  margin-bottom: 14px;
+  margin-top: 10px;
+  padding: 10px;
+  border-style: none;
+}
 
 /* Estilo para los campos de entrada */
 input {

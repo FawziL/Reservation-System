@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "../../../../../services/api";
+import { toast } from 'react-toastify';
 
 interface Params {
     id: string;
@@ -20,13 +21,24 @@ const EditReservation = ({ params }: { params: Params }) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
         try {
-            await api.patch(`/reservations/${id}`, formData, {
+            const response = await api.patch(`/reservations/${id}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            router.push("/admin/reservations"); // Redirige de vuelta a la lista de mesas
-        } catch (err) {
+            if (response.status === 200) {
+                toast.success(`Se ha modificado la reservación con éxito! 
+                    Status: ${response.statusText}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                router.push("/admin/reservations");
+            }
+        } catch (err:any) {
+            toast.error(`${err.response.statusText}: ${err.message}`, {
+                position: "top-right",
+                autoClose: 3000,
+            });
             setError("Error updating Reservation.");
         }
     };
@@ -44,31 +56,31 @@ const EditReservation = ({ params }: { params: Params }) => {
 
     return (
         <div className='container mt-6'>
-        <h1>Edit reservation</h1>
-        <form onSubmit={handleSubmit} className='mt-3'>
+            <h1>Edit reservation</h1>
+            <form onSubmit={handleSubmit} className='mt-3'>
 
-            <h2>Date:</h2>
-            <input
-                type="date"
-                name="reservationDate"
-                placeholder="Date" 
-                value={formData.reservationDate}
-                onChange={handleChange}
-            />
+                <h2>Date:</h2>
+                <input
+                    type="date"
+                    name="reservationDate"
+                    placeholder="Date" 
+                    value={formData.reservationDate}
+                    onChange={handleChange}
+                />
 
-            <h2>Table:</h2>
-            <input
-                type="text"
-                name="table"
-                placeholder="table"
-                value={formData.table}
-                onChange={handleChange}
-            />
+                <h2>Table:</h2>
+                <input
+                    type="text"
+                    name="table"
+                    placeholder="table"
+                    value={formData.table}
+                    onChange={handleChange}
+                />
 
-            {error && <p>{error}</p>}
-            <button type="submit">Edit Table</button>
-        </form>
-    </div>
+                {error && <p>{error}</p>}
+                <button type="submit">Edit Table</button>
+            </form>
+        </div>
     );
 };
 

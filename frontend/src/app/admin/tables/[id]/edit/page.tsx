@@ -1,11 +1,11 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import api from "../../../../../services/api";
+import { toast } from 'react-toastify';
 
 interface Params {
-    id: string; // Define que el id será una cadena
+    id: string; 
 }
 
 const EditTable = ({ params }: { params: Params }) => {
@@ -24,7 +24,11 @@ const EditTable = ({ params }: { params: Params }) => {
                     },
                 });
                 setTable(response.data);
-            } catch (err) {
+            } catch (err:any) {
+                toast.error(`${err.response.statusText}: ${err.message}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
                 setError("Error fetching table data.");
             }
         };
@@ -36,13 +40,24 @@ const EditTable = ({ params }: { params: Params }) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
         try {
-            await api.patch(`/tables/${id}`, table, {
+            const response = await api.patch(`/tables/${id}`, table, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            router.push("/admin/tables"); // Redirige de vuelta a la lista de mesas
-        } catch (err) {
+            if (response.status === 200) {
+                toast.success(`Se ha modificado la tabla con éxito! 
+                    Status: ${response.statusText}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                router.push("/admin/tables")
+            }
+        } catch (err:any) {
+            toast.error(`${err.response.statusText}`, {
+                position: "top-right",
+                autoClose: 3000,
+            });
             setError("Error updating table.");
         }
     };

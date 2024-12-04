@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import api from "../../../services/api";
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 interface User {
     id: number;
@@ -24,9 +25,12 @@ const Users = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log(response.data);
                 setUsers(response.data);
-            } catch (err) {
+            } catch (err:any) {
+                toast.error(`${err.response.statusText}: ${err.message}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
                 setError("Invalid token or error fetching users.");
             }
         };
@@ -37,14 +41,24 @@ const Users = () => {
     const deleteUser = async (id: number) => {
         const token = localStorage.getItem("token");
         try {
-            await api.delete(`/users/${id}`, {
+            const response = await api.delete(`/users/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setUsers(users.filter((user) => user.id !== id)); // Actualiza la lista local
-        } catch (err) {
-            console.error("Error deleting user:", err);
+            if (response.status === 200) {
+                toast.success(`Se ha eleminado el usuario con éxito! 
+                    Status: ${response.statusText}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+            }
+            setUsers(users.filter((user) => user.id !== id));
+        } catch (err:any) {
+            toast.error(`Error deleting user: ${err.response.statusText}`, {
+                position: "top-right",
+                autoClose: 3000,
+            });
             setError("Error deleting user.");
         }
     };

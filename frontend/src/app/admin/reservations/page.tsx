@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import api from "../../../services/api";
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 interface User {
     id: number;
@@ -33,29 +34,41 @@ const AdminReservations = () => {
         const fetchReservations = async () => {
             try {
                 const response = await api.get("/reservations");
-                console.log(response.data);
                 setReservations(response.data);
-            } catch (err) {
+            } catch (err:any) {
+                toast.error(`${err.response.statusText}: ${err.message}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
                 setError("Problem fetching reservations.");
             }
         };
-
         fetchReservations();
     }, []);
 
     const deleteReservation = async (id: number) => {
         const token = localStorage.getItem("token");
         try {
-            await api.delete(`/reservations/${id}`, {
+            const response = await api.delete(`/reservations/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setReservations(
-                reservations.filter((reservation) => reservation.id !== id)
-            );
-        } catch (err) {
-            console.error("Error deleting reservation:", err);
+            if (response.status === 200) {
+                toast.success(`Se ha eliminado la reserva con éxito! 
+                    Status: ${response.statusText}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                setReservations(
+                    reservations.filter((reservation) => reservation.id !== id)
+                );
+            }
+        } catch (err:any) {
+            toast.error(`Error deleting reservation: ${err.response.statusText}`, {
+                position: "top-right",
+                autoClose: 3000,
+            });
             setError("Error deleting reservation.");
         }
     };

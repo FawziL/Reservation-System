@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import api from "../../../services/api";
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 interface Tables {
     id: number;
@@ -20,11 +21,16 @@ const Tables = () => {
             try {
                 const response = await api.get("/tables", {
                     headers: {
-                        Authorization: `Bearer ${token}`, // Añade el token en el encabezado
+                        Authorization: `Bearer ${token}`,
                     },
                 });
                 setTables(response.data);
-            } catch (err) {
+            } catch (err:any) {
+                toast.error(`Error fetching tables: ${err.response.statusText}
+                    Status code: ${err.response.status}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
                 setError("Invalid token or error fetching tables.");
             }
         };
@@ -35,14 +41,24 @@ const Tables = () => {
     const deleteTable = async (id: number) => {
         const token = localStorage.getItem("token");
         try {
-            await api.delete(`/tables/${id}`, {
+            const response = await api.delete(`/tables/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setTables(tables.filter((table) => table.id !== id)); // Actualiza la lista local
-        } catch (err) {
-            console.error("Error deleting table:", err);
+            if (response.status === 200) {
+                toast.success(`Se ha eliminado la mesa con éxito! 
+                    Status: ${response.statusText}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+            }
+            setTables(tables.filter((table) => table.id !== id));
+        } catch (err:any) {
+            toast.error(`Error deleting table: ${err.response.statusText}`, {
+                position: "top-right",
+                autoClose: 3000,
+            });
             setError("Error deleting table.");
         }
     };
