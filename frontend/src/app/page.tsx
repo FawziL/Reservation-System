@@ -1,5 +1,5 @@
 "use client";
-import { useAuth } from "../hooks/AuthContext";
+import { useAuth } from "@/hooks/AuthContext";
 
 const Home = () => {
     const { user } = useAuth();

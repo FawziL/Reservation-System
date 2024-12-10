@@ -1,9 +1,9 @@
 "use client"; // Marca el componente como Cliente
 import { useState, useEffect } from "react";
-import api from "../../../services/api";
+import api from "@/services/api";
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
-import ConfirmModal from "../../../components/ConfirmationModal"; // Importa el modal reutilizable
+import ConfirmModal from "@/components/ConfirmationModal"; // Importa el modal reutilizable
 
 interface Tables {
     id: number;

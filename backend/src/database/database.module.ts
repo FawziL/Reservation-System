@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../entities/user.entity';
-import { Reservation } from '../entities/reservation.entity';
-import { Table } from '../entities/table.entity';
+import { User } from '@/entities/user.entity';
+import { Reservation } from '@/entities/reservation.entity';
+import { Table } from '@/entities/table.entity';
 import * as dotenv from 'dotenv';
 dotenv.config();
 

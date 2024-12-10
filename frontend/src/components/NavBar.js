@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useAuth } from "../hooks/AuthContext";
+import { useAuth } from "@/hooks/AuthContext";
 
 const Navbar = () => {
     const { user, logout } = useAuth();

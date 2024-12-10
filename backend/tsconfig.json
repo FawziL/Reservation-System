@@ -10,6 +10,9 @@
         "sourceMap": true,
         "outDir": "./dist",
         "baseUrl": "./",
+        "paths": {
+            "@/*": ["src/*"] // Define el alias para apuntar a la carpeta src
+        },
         "incremental": true,
         "skipLibCheck": true,
         "strictNullChecks": false,
@@ -18,4 +21,4 @@
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false
     }
-}
+  }

@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '@/auth/guards/roles.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('users')

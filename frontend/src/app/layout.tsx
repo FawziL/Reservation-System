@@ -1,6 +1,6 @@
 import './globals.css'; // Asegúrate de importar los estilos globales
-import Navbar from '../components/NavBar';
-import { AuthProvider } from '../hooks/AuthContext';
+import Navbar from '@/components/NavBar';
+import { AuthProvider } from '@/hooks/AuthContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

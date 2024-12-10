@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import api from "../../../../../services/api";
+import api from "@/services/api";
 import { toast } from 'react-toastify';
 
 interface Params {

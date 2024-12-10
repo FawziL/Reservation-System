@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import api from "../../../services/api";
+import api from "@/services/api";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import ConfirmModal from "../../../components/ConfirmationModal"; // Asegúrate de tener el modal implementado
+import ConfirmModal from "@/components/ConfirmationModal"; // Asegúrate de tener el modal implementado
 
 interface User {
     id: number;

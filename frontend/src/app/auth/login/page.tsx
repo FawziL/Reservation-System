@@ -1,8 +1,8 @@
 "use client";  // Marca el componente como Cliente
 import { useState } from 'react';
 import { useRouter } from "next/navigation";
-import api from '../../../services/api';
-import { useAuth } from '../../../hooks/AuthContext';
+import api from '@/services/api';
+import { useAuth } from '@/hooks/AuthContext';
 import { toast } from 'react-toastify';
 
 const Login = () => {

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import api from "../../../services/api";
-import { useAuth } from "../../../hooks/AuthContext";
+import api from "@/services/api";
+import { useAuth } from "@/hooks/AuthContext";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 

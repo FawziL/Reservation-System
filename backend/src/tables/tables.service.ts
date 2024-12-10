@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
 import { CheckAvailabilityDto } from './dto/check-availability.dto';
-import { Table } from '../entities/table.entity';
-import { Reservation } from '../entities/reservation.entity';
+import { Table } from '@/entities/table.entity';
+import { Reservation } from '@/entities/reservation.entity';
 
 @Injectable()
 export class TablesService {
