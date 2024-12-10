@@ -74,7 +74,7 @@ const Reservations = () => {
                 <p className="text-gray-500">No reservations found.</p>
             ) : (
                 <div className="flex justify-around">
-                    <table className="w-5/6 bg-gray-800 shadow-md rounded-md overflow-hidden">
+                    <table className="w-5/7 bg-gray-800 shadow-md rounded-md overflow-hidden">
                         <thead className="text-white">
                             <tr>
                                 <th className="py-2 px-4 text-left">User</th>

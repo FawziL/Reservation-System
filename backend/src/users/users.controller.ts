@@ -6,6 +6,7 @@ import {
     Param,
     Delete,
     UseGuards,
+    Request
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,12 +21,13 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiBody } 
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
-    @ApiOperation({ summary: 'Obtener todos los usuarios' })
+    @ApiOperation({ summary: 'Obtener todos los usuarios exceptuando al que hace la solicitud' })
     @ApiResponse({ status: 200, description: 'Lista de usuarios devuelta con éxito.' })
     @ApiResponse({ status: 403, description: 'Acceso no autorizado.' })
     @Get()
-    findAll() {
-        return this.usersService.findAll();
+    findAll(@Request() req: any) {
+        const currentUser = req.user.userID; // Usuario autenticado extraído del token
+        return this.usersService.findAll(currentUser);
     }
 
     @ApiOperation({ summary: 'Obtener un usuario por ID' })

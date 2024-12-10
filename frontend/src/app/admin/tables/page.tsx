@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import api from "../../../services/api";
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
+import ConfirmModal from "../../../components/ConfirmationModal"; // Importa el modal reutilizable
 
 interface Tables {
     id: number;
@@ -13,6 +14,8 @@ interface Tables {
 const Tables = () => {
     const [tables, setTables] = useState<Tables[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [modalOpen, setModalOpen] = useState(false); 
+    const [selectedTableId, setSelectedTableId] = useState<number | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -47,24 +50,39 @@ const Tables = () => {
                 },
             });
             if (response.status === 200) {
-                toast.success(`Se ha eliminado la mesa con éxito! 
-                    Status: ${response.statusText}`, {
-                    position: "top-right",
-                    autoClose: 3000,
-                });
+                toast.success(
+                    `Se ha eliminado la mesa con éxito! 
+                    Status: ${response.statusText}`,
+                    {
+                        position: "top-right",
+                        autoClose: 3000,
+                    }
+                );
             }
             setTables(tables.filter((table) => table.id !== id));
-        } catch (err:any) {
+        } catch (err: any) {
             toast.error(`Error deleting table: ${err.response.statusText}`, {
                 position: "top-right",
                 autoClose: 3000,
             });
             setError("Error deleting table.");
         }
+        setModalOpen(false);
     };
 
     const editTable = (id: number) => {
         router.push(`/admin/tables/${id}/edit`);
+    };
+
+    const handleDeleteClick = (id: number) => {
+        setSelectedTableId(id);
+        setModalOpen(true); // Abre el modal
+    };
+
+    const handleConfirmDelete = () => {
+        if (selectedTableId !== null) {
+            deleteTable(selectedTableId);
+        }
     };
 
     if (error) {
@@ -120,7 +138,7 @@ const Tables = () => {
                                         <button
                                             className="bg-red-500 text-white px-4 py-1 rounded"
                                             onClick={() =>
-                                                deleteTable(table.id)
+                                                handleDeleteClick(table.id)
                                             }
                                         >
                                             Delete
@@ -132,6 +150,13 @@ const Tables = () => {
                     </table>
                 </div>
             )}
+            <ConfirmModal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Confirm Deletion"
+                message="Are you sure you want to delete this table? This action cannot be undone."
+            />
         </div>
     );
 };

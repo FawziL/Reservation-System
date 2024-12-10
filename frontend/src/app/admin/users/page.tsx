@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import api from "../../../services/api";
 import { useRouter } from "next/navigation";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/ConfirmationModal"; // Asegúrate de tener el modal implementado
 
 interface User {
     id: number;
@@ -14,6 +15,8 @@ interface User {
 const Users = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -38,28 +41,37 @@ const Users = () => {
         fetchUsers();
     }, []);
 
-    const deleteUser = async (id: number) => {
+    const handleDeleteClick = (id: number) => {
+        setSelectedUserId(id);
+        setModalOpen(true); // Abre el modal
+    };
+
+    const handleConfirmDelete = async () => {
+        if (selectedUserId === null) return;
+
         const token = localStorage.getItem("token");
         try {
-            const response = await api.delete(`/users/${id}`, {
+            const response = await api.delete(`/users/${selectedUserId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             if (response.status === 200) {
-                toast.success(`Se ha eleminado el usuario con éxito! 
-                    Status: ${response.statusText}`, {
+                toast.success(`User deleted successfully.`, {
                     position: "top-right",
                     autoClose: 3000,
                 });
+                setUsers(users.filter((user) => user.id !== selectedUserId));
             }
-            setUsers(users.filter((user) => user.id !== id));
-        } catch (err:any) {
-            toast.error(`Error deleting user: ${err.response.statusText}`, {
+        } catch (err: any) {
+            toast.error(`Error deleting user: ${err.response.statusText || "Unknown error"}`, {
                 position: "top-right",
                 autoClose: 3000,
             });
             setError("Error deleting user.");
+        } finally {
+            setModalOpen(false);
+            setSelectedUserId(null);
         }
     };
 
@@ -75,9 +87,7 @@ const Users = () => {
         <div className="container mt-6">
             <h1>Users</h1>
             {users.length === 0 ? (
-                <p className="text-2xl font-bold mb-4 text-center">
-                    No Users found.
-                </p>
+                <p className="text-2xl font-bold mb-4 text-center">No Users found.</p>
             ) : (
                 <div className="flex justify-around">
                     <table className="w-3/5 bg-gray-800 shadow-md rounded-lg overflow-hidden text-left">
@@ -95,20 +105,12 @@ const Users = () => {
                                 <tr
                                     key={user.id}
                                     className={`${
-                                        index % 2 === 0
-                                            ? "bg-gray-100"
-                                            : "bg-white"
+                                        index % 2 === 0 ? "bg-gray-100" : "bg-white"
                                     } hover:bg-gray-200`}
                                 >
-                                    <td className="py-2 px-4 border-b text-gray-800">
-                                        {user.username}
-                                    </td>
-                                    <td className="py-2 px-4 border-b text-gray-800">
-                                        {user.id}
-                                    </td>
-                                    <td className="py-2 px-4 border-b text-gray-800">
-                                        {user.email}
-                                    </td>
+                                    <td className="py-2 px-4 border-b text-gray-800">{user.username}</td>
+                                    <td className="py-2 px-4 border-b text-gray-800">{user.id}</td>
+                                    <td className="py-2 px-4 border-b text-gray-800">{user.email}</td>
                                     <td className="py-2 px-4 border-b text-gray-800">
                                         {user.isAdmin ? "True" : "False"}
                                     </td>
@@ -121,7 +123,7 @@ const Users = () => {
                                         </button>
                                         <button
                                             className="bg-red-500 text-white px-4 py-1 rounded"
-                                            onClick={() => deleteUser(user.id)}
+                                            onClick={() => handleDeleteClick(user.id)}
                                         >
                                             Delete
                                         </button>
@@ -132,6 +134,13 @@ const Users = () => {
                     </table>
                 </div>
             )}
+            <ConfirmModal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Confirm Deletion"
+                message="Are you sure you want to delete this user? This action cannot be undone."
+            />
         </div>
     );
 };

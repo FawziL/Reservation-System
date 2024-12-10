@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Not } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -11,9 +11,11 @@ export class UsersService {
         private readonly userRepository: Repository<User>, // Inyecta el repositorio de User
     ) {}
 
-    // Obtener todos los usuarios
-    async findAll(): Promise<User[]> {
-        return await this.userRepository.find();
+    // Obtener todos los usuarios menos el que lo consulta
+    async findAll(userID: number): Promise<User[]> {
+        return await this.userRepository.find({
+            where: { id: Not(userID) }, 
+        });
     }
 
     // Obtener un usuario por ID
@@ -23,13 +25,10 @@ export class UsersService {
 
     // Actualizar un usuario
     async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-        // Busca el usuario actual en la base de datos
         const existingUser = await this.findOne(id);
         if (!existingUser) {
             throw new Error(`User with ID ${id} not found`);
         }
-        console.log(updateUserDto)
-        
 
         // Combina los valores actuales con los nuevos valores del DTO
         const updatedData = Object.entries(updateUserDto).reduce((acc, [key, value]) => {
