@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, HttpCode, HttpStatus  } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { User } from '../entities/user.entity';
@@ -6,7 +6,7 @@ import { LoginDto } from './dto/login.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
@@ -21,7 +21,8 @@ export class AuthController {
 
     @ApiOperation({ summary: 'Inicio de sesión' })
     @ApiBody({ type: LoginDto, description: 'Credenciales para iniciar sesión' })
-    @ApiResponse({ status: 200, description: 'Inicio de sesión exitoso. Retorna el token de acceso.' })
+    @ApiResponse({ status: 200, description: 'Inicio de sesión exitoso.' })
+    @HttpCode(HttpStatus.OK) // Especifica el código de estado 200
     @ApiResponse({ status: 401, description: 'Credenciales inválidas.' })
     @Post('login')
     async login(@Body() loginDto: LoginDto): Promise<{ access_token: string }> {

@@ -6,7 +6,7 @@ import { CheckAvailabilityDto } from './dto/check-availability.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('tables')
-@Controller('tables')
+@Controller('api/tables')
 export class TablesController {
     constructor(private readonly tablesService: TablesService) {}
 

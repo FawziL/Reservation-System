@@ -1,5 +1,6 @@
 "use client";  // Marca el componente como Cliente
 import { useState } from 'react';
+import { useRouter } from "next/navigation";
 import api from '../../../services/api';
 import { useAuth } from '../../../hooks/AuthContext';
 import { toast } from 'react-toastify';
@@ -9,6 +10,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null); 
     const { login } = useAuth();
+    const router = useRouter();
 
     const handleSubmit = async (e:any) => {
         e.preventDefault();
@@ -16,10 +18,18 @@ const Login = () => {
 
         try {
             const response = await api.post('/auth/login', { email, password });
-            console.log(response.data.access_token);
             login(response.data.access_token);
-        } catch (err) {
-            toast.error("Invalid email or password", {
+
+            if (response.status === 200) {
+                toast.success(`Te has logueado con éxito! 
+                    Status: ${response.statusText}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                router.push("/");
+            }
+        } catch (err:any) {
+            toast.error(`${err.response.statusText}: ${err.response.data.message}`, {
                 position: "top-right",
                 autoClose: 3000,
             });

@@ -1,9 +1,11 @@
-"use client";  // Marca el componente como Cliente
+"use client";
 import { useState } from 'react';
+import { useRouter } from "next/navigation";
 import api from '../../../services/api';
 import { toast } from 'react-toastify';
 
 const Register = () => {
+    const router = useRouter();
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -24,9 +26,15 @@ const Register = () => {
         try {
         const response = await api.post('/auth/register', formData);
         if (response.status === 201) {
+            toast.success(`Te has registrado con éxito! 
+                Status: ${response.statusText}`, {
+                position: "top-right",
+                autoClose: 3000,
+            });
+            router.push("/auth/login");
         }
-        } catch (error) {
-            toast.error("Registration failed. Try again.", {
+        } catch (err:any) {
+            toast.error(`${err.response.statusText}: ${err.response.data.message}`, {
                 position: "top-right",
                 autoClose: 3000,
             });
