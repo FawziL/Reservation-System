@@ -7,11 +7,13 @@ import { Repository } from 'typeorm';
 import { Reservation } from '@/entities/reservation.entity';
 import { Table } from '@/entities/table.entity';
 import { NotificationsService } from '@/notifications/notifications.service';
+import { NotificationsGateway } from '@/notifications/notifications.gateway'; // Importar el gateway
 
 @Injectable()
 export class ReservationsService {
     constructor(
-        private readonly NotificationsService: NotificationsService,
+        private readonly notificationsService: NotificationsService,
+        private readonly notificationsGateway: NotificationsGateway, // Inyectar el gateway
         private readonly usersService: UsersService,
         @InjectRepository(Reservation)
         private readonly reservationRepository: Repository<Reservation>,
@@ -40,23 +42,30 @@ export class ReservationsService {
             table: { id: createReservationDto.table },
         });
 
-        const savedReservation = await this.reservationRepository.save(reservation);
+        //const savedReservation = await this.reservationRepository.save(reservation);
 
-        const fecha = new Date(savedReservation.reservationDate);
+        const fecha = new Date(reservation.reservationDate);
         const anio = fecha.getFullYear();
         const mes = fecha.getMonth() + 1; 
         const dia = fecha.getDate();
         const horas = fecha.getHours();
         const minutos = fecha.getMinutes();
 
-        // Enviar notificación después de crear la reserva
-        await this.NotificationsService.sendEmail({
+        // Enviar notificación por email
+        /*await this.notificationsService.sendEmail({
             to: user.email,
             subject: 'Reservation Confirmation',
             text: `Your reservation for table ${table.tableNumber} on ${dia}/${mes}/${anio} ${horas}:${minutos} has been confirmed.`,
+        });*/
+
+        // Enviar notificación en tiempo real a través del gateway
+        this.notificationsGateway.handleNotification({
+            message: `Nueva reservación creada por ${user.username} para la mesa ${table.tableNumber} el ${dia}/${mes}/${anio} ${horas}:${minutos}.`,
+            reservationId: reservation.id,
+            userId: user.id,
         });
 
-        return savedReservation;
+        return reservation;
     }
 
     async findAll() {
@@ -80,11 +89,11 @@ export class ReservationsService {
             where: { user: { id: userID } },
             relations: ['user', 'table'],
         });
-    
+
         if (!reservations || reservations.length === 0) {
             throw new NotFoundException('No reservations found for this user');
         }
-    
+
         return reservations;
     }
 
@@ -103,27 +112,30 @@ export class ReservationsService {
         const reservation = await this.reservationRepository.findOne({
             where: { id },
         });
-    
+
         if (!reservation) {
             throw new NotFoundException('Reservation not found');
         }
-       
+
         // Filtra los campos vacíos y mezcla con los datos existentes
         const updatedReservation = {
-            ...reservation, 
+            ...reservation,
             ...Object.fromEntries(
                 Object.entries(updateReservationDto).filter(
-                    ([_, value]) => value !== "" && value !== null && value !== undefined // Ignora valores vacíos
-                )
+                    ([_, value]) =>
+                        value !== '' && value !== null && value !== undefined,
+                ),
             ),
-            table: updateReservationDto.table ? { id: updateReservationDto.table } : reservation.table, 
+            table: updateReservationDto.table
+                ? { id: updateReservationDto.table }
+                : reservation.table,
         };
-    
+
         await this.reservationRepository.save(updatedReservation);
-    
+
         return this.findOne(id);
     }
-    
+
     async remove(id: number) {
         const reservation = await this.reservationRepository.findOne({
             where: { id },

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/AuthContext";
+import Notifications from "@/components/Notifications";
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -64,7 +65,11 @@ const Navbar = () => {
                 >
                     <span className="material-icons">Menu</span>
                 </button>
-                <h1 className="text-lg font-bold">Reservation System 1.0.0</h1>
+                <div className="flex items-center">
+                    <Notifications />
+                    <h1 className="text-lg font-bold">Reservation System 1.0.0</h1>
+                </div>
+                
             </div>
 
             {/* Sidebar */}

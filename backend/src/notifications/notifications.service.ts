@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import { NotificationsGateway } from './notifications.gateway';
 
 @Injectable()
 export class NotificationsService {
@@ -26,5 +27,11 @@ export class NotificationsService {
             console.error('Error sending email:', error);
             throw new Error('Could not send email');
         }
+    }
+
+    constructor(private readonly notificationsGateway: NotificationsGateway) {}
+    // Método para enviar una notificación WebSocket a los administradores
+    sendNotification(message: any) {
+        this.notificationsGateway.handleNotification(message); // Emite el mensaje a todos los clientes conectados
     }
 }

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { NotificationsService } from './notifications.service'; // Ajusta el path según tu estructura
+import { NotificationsService } from './notifications.service';
+import { NotificationsGateway } from './notifications.gateway';
 
 @Module({
-    providers: [NotificationsService],
-    exports: [NotificationsService],
+    providers: [NotificationsService, NotificationsGateway],
+    exports: [NotificationsService, NotificationsGateway],
 })
-
 export class NotificationsModule {}
