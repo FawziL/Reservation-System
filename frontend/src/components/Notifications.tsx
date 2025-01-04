@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 type Notification = {
+    id: number; // Se requiere un identificador único
     message: string;
     reservationId: number;
     userId: number;
@@ -13,6 +14,7 @@ type Notification = {
 const Notifications = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [readNotifications, setReadNotifications] = useState<number[]>([]); // IDs de notificaciones leídas
 
     useEffect(() => {
         const socket = io("http://localhost:8080");
@@ -29,6 +31,12 @@ const Notifications = () => {
 
     const toggleDropdown = () => setIsOpen(!isOpen);
 
+    const handleNotificationClick = (id: number) => {
+        if (!readNotifications.includes(id)) {
+            setReadNotifications((prev) => [...prev, id]);
+        }
+    };
+
     return (
         <div className="relative">
             {/* Ícono de notificación */}
@@ -38,10 +46,10 @@ const Notifications = () => {
                 aria-label="Notifications"
             >
                 <img src="/notification.svg" alt="Notificaciones" width={28} height={28} />
-                {/* Contador */}
+                {/* Contador de notificaciones no leídas */}
                 {notifications.length > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 rounded-full">
-                        {notifications.length}
+                        {notifications.filter((notif) => !readNotifications.includes(notif.id)).length}
                     </span>
                 )}
             </div>
@@ -53,17 +61,28 @@ const Notifications = () => {
                         <h3 className="text-lg font-semibold mb-2">Notificaciones:</h3>
                         {notifications.length > 0 ? (
                             <ul>
-                                {notifications.map((notif, index) => (
+                                {notifications.map((notif) => (
                                     <li
-                                        key={index}
-                                        className="p-2 border-b hover:bg-gray-100"
+                                        key={notif.id}
+                                        className={`p-2 border-b hover:bg-gray-100 cursor-pointer ${
+                                            readNotifications.includes(notif.id)
+                                                ? "bg-gray-200"
+                                                : "bg-white"
+                                        }`}
+                                        onClick={() => handleNotificationClick(notif.id)}
                                     >
-                                        <p className="text-sm">
-                                            {notif.message}
-                                        </p>
-                                        <p className="text-xs text-gray-500">
-                                            Reserva ID: {notif.reservationId}
-                                        </p>
+                                        <div className="flex items-center">
+                                            {/* Punto rojo si no ha sido leída */}
+                                            {!readNotifications.includes(notif.id) && (
+                                                <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                                            )}
+                                            <div>
+                                                <p className="text-sm">{notif.message}</p>
+                                                <p className="text-xs text-gray-500">
+                                                    Reserva ID: {notif.reservationId}
+                                                </p>
+                                            </div>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
