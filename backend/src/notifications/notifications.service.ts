@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateNotificationDto } from './dto/create-notification.dto';
 import { NotificationsGateway } from './notifications.gateway';
 import { Notification } from '@/entities/notification.entity';
 
@@ -20,7 +21,7 @@ export class NotificationsService {
         private readonly notificationsRepo: Repository<Notification>,
         private readonly notificationsGateway: NotificationsGateway,
     ) {}
-
+    
     // Enviar un correo electrónico
     async sendEmail(options: { to: string; subject: string; text: string }) {
         const mailOptions = {
@@ -40,13 +41,9 @@ export class NotificationsService {
     }
 
     // Guardar una notificación en la base de datos
-    async createNotification(message: string, userId: number, reservationId: number,): Promise<Notification> {
-        const notification = this.notificationsRepo.create({
-            message,
-            userId,
-            reservationId,
-        })
-        return await this.notificationsRepo.save(notification);
+    async createNotification(createNotificationDto: CreateNotificationDto) {
+        const newNotification = this.notificationsRepo.create(createNotificationDto);
+        return await this.notificationsRepo.save(newNotification);
     }
 
     // Enviar una notificación WebSocket

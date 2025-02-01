@@ -58,12 +58,16 @@ export class ReservationsService {
             text: `Your reservation for table ${table.tableNumber} on ${dia}/${mes}/${anio} ${horas}:${minutos} has been confirmed.`,
         });*/
 
-        // Enviar notificación en tiempo real a través del gateway
-        this.notificationsGateway.handleNotification({
+        const notification = 
+        {
             message: `Nueva reservación creada por ${user.username} para la mesa ${table.tableNumber} el ${dia}/${mes}/${anio} ${horas}:${minutos}.`,
             reservationId: reservation.id,
             userId: user.id,
-        });
+        }
+        // Enviar notificación en tiempo real a través del gateway
+        this.notificationsGateway.handleNotification(notification);
+        // Guardar notificación en caso no haya admin conectado
+        this.notificationsService.createNotification(notification);
 
         return reservation;
     }
