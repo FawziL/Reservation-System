@@ -1,27 +1,68 @@
-// components/Notifications.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 type Notification = {
-    id: number; // Se requiere un identificador único
+    id: number;
     message: string;
     reservationId: number;
     userId: number;
+    isRead?: boolean;
 };
 
-const Notifications = () => {
+type NotificationsProps = {
+    userId: number;
+};
+
+const Notifications = ({ userId }: NotificationsProps) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isOpen, setIsOpen] = useState(false);
-    const [readNotifications, setReadNotifications] = useState<number[]>([]); // IDs de notificaciones leídas
+    const [readNotifications, setReadNotifications] = useState<number[]>([]);
 
+    // Cargar notificaciones almacenadas al montar el componente
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                // Obtener todas las notificaciones del usuario
+                const allNotificationsResponse = await fetch(
+                    `http://localhost:8080/notifications/user/${userId}`
+                );
+                const allNotifications = await allNotificationsResponse.json();
+                setNotifications(allNotifications);
+
+                // Obtener notificaciones no leídas
+                const unreadResponse = await fetch(
+                    `http://localhost:8080/notifications/user/${userId}/unread`
+                );
+                const unreadNotifications = await unreadResponse.json();
+
+                // Determinar las notificaciones leídas
+                const readIds = allNotifications
+                    .filter(
+                        (notif: Notification) =>
+                            !unreadNotifications.some(
+                                (unread: Notification) => unread.id === notif.id
+                            )
+                    )
+                    .map((notif: Notification) => notif.id);
+
+                setReadNotifications(readIds);
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+            }
+        };
+
+        fetchNotifications();
+    }, [userId]);
+
+    // Conectar Socket.IO y escuchar nuevas notificaciones
     useEffect(() => {
         const socket = io("http://localhost:8080");
 
         socket.on("new_notification", (data: Notification) => {
             console.log("Notificación recibida:", data);
-            setNotifications((prev) => [...prev, data]);
+            setNotifications((prev) => [data, ...prev]); // Añadir la nueva notificación al principio
         });
 
         return () => {
@@ -31,11 +72,25 @@ const Notifications = () => {
 
     const toggleDropdown = () => setIsOpen(!isOpen);
 
-    const handleNotificationClick = (id: number) => {
+    const handleNotificationClick = async (id: number) => {
         if (!readNotifications.includes(id)) {
             setReadNotifications((prev) => [...prev, id]);
+
+            // Marcar la notificación como leída en el backend
+            try {
+                await fetch(`http://localhost:8080/notifications/${id}/read`, {
+                    method: "PATCH",
+                });
+            } catch (error) {
+                console.error("Error marking notification as read:", error);
+            }
         }
     };
+
+    // Filtrar notificaciones no leídas
+    const unreadNotifications = notifications.filter(
+        (notif) => !readNotifications.includes(notif.id)
+    );
 
     return (
         <div className="relative">
@@ -47,9 +102,9 @@ const Notifications = () => {
             >
                 <img src="/notification.svg" alt="Notificaciones" width={28} height={28} />
                 {/* Contador de notificaciones no leídas */}
-                {notifications.length > 0 && (
+                {unreadNotifications.length > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 rounded-full">
-                        {notifications.filter((notif) => !readNotifications.includes(notif.id)).length}
+                        {unreadNotifications.length}
                     </span>
                 )}
             </div>
@@ -61,30 +116,37 @@ const Notifications = () => {
                         <h3 className="text-lg font-semibold mb-2">Notificaciones:</h3>
                         {notifications.length > 0 ? (
                             <ul>
-                                {notifications.map((notif) => (
-                                    <li
-                                        key={notif.id}
-                                        className={`p-2 border-b hover:bg-gray-100 cursor-pointer ${
-                                            readNotifications.includes(notif.id)
-                                                ? "bg-gray-200"
-                                                : "bg-white"
-                                        }`}
-                                        onClick={() => handleNotificationClick(notif.id)}
-                                    >
-                                        <div className="flex items-center">
-                                            {/* Punto rojo si no ha sido leída */}
-                                            {!readNotifications.includes(notif.id) && (
-                                                <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                                            )}
-                                            <div>
-                                                <p className="text-sm">{notif.message}</p>
-                                                <p className="text-xs text-gray-500">
-                                                    Reserva ID: {notif.reservationId}
-                                                </p>
+                                {/* Mostrar notificaciones no leídas primero */}
+                                {notifications
+                                    .sort((a, b) => {
+                                        const aIsRead = readNotifications.includes(a.id);
+                                        const bIsRead = readNotifications.includes(b.id);
+                                        return aIsRead === bIsRead ? 0 : aIsRead ? 1 : -1;
+                                    })
+                                    .map((notif) => (
+                                        <li
+                                            key={notif.id}
+                                            className={`p-2 border-b hover:bg-gray-100 cursor-pointer ${
+                                                readNotifications.includes(notif.id)
+                                                    ? "bg-gray-200"
+                                                    : "bg-white"
+                                            }`}
+                                            onClick={() => handleNotificationClick(notif.id)}
+                                        >
+                                            <div className="flex items-center">
+                                                {/* Punto rojo si no ha sido leída */}
+                                                {!readNotifications.includes(notif.id) && (
+                                                    <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                                                )}
+                                                <div>
+                                                    <p className="text-sm">{notif.message}</p>
+                                                    <p className="text-xs text-gray-500">
+                                                        Reserva ID: {notif.reservationId}
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </li>
-                                ))}
+                                        </li>
+                                    ))}
                             </ul>
                         ) : (
                             <p className="text-sm text-gray-500 text-center">Sin notificaciones</p>
@@ -97,4 +159,3 @@ const Notifications = () => {
 };
 
 export default Notifications;
-

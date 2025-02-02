@@ -9,6 +9,7 @@ const Navbar = () => {
     const { user, logout } = useAuth();
     const [isClient, setIsClient] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const userId = user?.userID;
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -51,7 +52,7 @@ const Navbar = () => {
             name: "Logout",
             icon: "🚪",
             auth: true,
-            isLogout: true, 
+            isLogout: true,
         },
     ];
 
@@ -66,10 +67,10 @@ const Navbar = () => {
                     <span className="material-icons">Menu</span>
                 </button>
                 <div className="flex items-center">
-                    <Notifications />
+                    {/* Renderizar Notifications solo si userId existe */}
+                    {userId && <Notifications userId={userId} />}
                     <h1 className="text-lg font-bold">Reservation System 1.0.0</h1>
                 </div>
-                
             </div>
 
             {/* Sidebar */}
