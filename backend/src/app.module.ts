@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TablesModule } from './tables/tables.module';
 import { ReservationsModule } from './reservations/reservations.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { ReservationsModule } from './reservations/reservations.module';
         UsersModule,
         ReservationsModule,
         TablesModule,
+        NotificationsModule
     ],
     controllers: [AppController],
     providers: [AppService],

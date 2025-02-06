@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
-import { NotificationsService } from './notifications.service'; // Ajusta el path según tu estructura
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { NotificationsService } from './notifications.service';
+import { NotificationsGateway } from './notifications.gateway';
+import { Notification } from '@/entities/notification.entity';
+import { NotificationsController } from './notifications.controller';
 
 @Module({
-    providers: [NotificationsService],
-    exports: [NotificationsService],
+    imports: [TypeOrmModule.forFeature([Notification])],
+    providers: [NotificationsService, NotificationsGateway],
+    exports: [NotificationsService, NotificationsGateway],
+    controllers: [NotificationsController],
 })
 
 export class NotificationsModule {}
