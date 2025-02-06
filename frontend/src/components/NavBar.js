@@ -10,6 +10,7 @@ const Navbar = () => {
     const [isClient, setIsClient] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const userId = user?.userID;
+    const isAdmin = user?.admin;
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -68,7 +69,7 @@ const Navbar = () => {
                 </button>
                 <div className="flex items-center">
                     {/* Renderizar Notifications solo si userId existe */}
-                    {userId && <Notifications userId={userId} />}
+                    {userId && isAdmin && <Notifications userId={userId} />}
                     <h1 className="text-lg font-bold">Reservation System 1.0.0</h1>
                 </div>
             </div>
