@@ -4,7 +4,7 @@ import api from '@/services/api';
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
 
-const Login = () => {
+const CreateTable = () => {
     const [tableNumber, setTableNumber] = useState('');
     const [seats, setSeats] = useState('');
     const [error, setError] = useState<string | null>(null); 
@@ -60,4 +60,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default CreateTable;

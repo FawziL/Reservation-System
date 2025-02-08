@@ -4,13 +4,7 @@ import api from "@/services/api";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import ConfirmModal from "@/components/ConfirmationModal"; // Asegúrate de tener el modal implementado
-
-interface User {
-    id: number;
-    username: string;
-    email: string;
-    isAdmin: boolean;
-}
+import { User } from "@/types/user";
 
 const Users = () => {
     const [users, setUsers] = useState<User[]>([]);
@@ -84,54 +78,64 @@ const Users = () => {
     }
 
     return (
-        <div className="container mt-6">
-            <h1>Users</h1>
+        <>
             {users.length === 0 ? (
                 <p className="text-2xl font-bold mb-4 text-center">No Users found.</p>
             ) : (
-                <div className="flex justify-around">
-                    <table className="w-3/5 bg-gray-800 shadow-md rounded-lg overflow-hidden text-left">
-                        <thead className="text-white">
-                            <tr>
-                                <th className="py-2 px-4 border-b">Username</th>
-                                <th className="py-2 px-4 border-b">ID</th>
-                                <th className="py-2 px-4 border-b">Email</th>
-                                <th className="py-2 px-4 border-b">Admin</th>
-                                <th className="py-2 px-4 border-b">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map((user, index) => (
-                                <tr
-                                    key={user.id}
-                                    className={`${
-                                        index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                                    } hover:bg-gray-200`}
-                                >
-                                    <td className="py-2 px-4 border-b text-gray-800">{user.username}</td>
-                                    <td className="py-2 px-4 border-b text-gray-800">{user.id}</td>
-                                    <td className="py-2 px-4 border-b text-gray-800">{user.email}</td>
-                                    <td className="py-2 px-4 border-b text-gray-800">
-                                        {user.isAdmin ? "True" : "False"}
-                                    </td>
-                                    <td className="py-2 px-4 border-b">
-                                        <button
-                                            className="bg-blue-500 text-white px-4 py-1 rounded mr-2"
-                                            onClick={() => editUser(user.id)}
+                <div className="p-6 min-h-90 text-black">
+                    <h1 className="text-2xl font-semibold text-start">Panel de Usuario</h1>
+                    <div className="mb-6 mt-4 flex justify-between items-center">
+                        <div className="bg-white p-4 rounded-lg shadow-md flex items-center justify-between">
+                            <span className="text-lg font-medium text-black">Usuarios Totales: {users.length}</span>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-md">
+                        <h3 className="text-lg font-semibold mb-4 text-black">Usuarios</h3>
+                        <div className="overflow-x-auto  min-h-64">
+                            <table className="w-5/5 bg-gray-800 shadow-md rounded-lg overflow-hidden text-left">
+                                <thead className="text-white">
+                                    <tr>
+                                        <th className="py-2 px-4 border-b">Username</th>
+                                        <th className="py-2 px-4 border-b">ID</th>
+                                        <th className="py-2 px-4 border-b">Email</th>
+                                        <th className="py-2 px-4 border-b">Admin</th>
+                                        <th className="py-2 px-4 border-b">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {users.map((user, index) => (
+                                        <tr
+                                            key={user.id}
+                                            className={`${
+                                                index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                                            } hover:bg-gray-200`}
                                         >
-                                            Edit
-                                        </button>
-                                        <button
-                                            className="bg-red-500 text-white px-4 py-1 rounded"
-                                            onClick={() => handleDeleteClick(user.id)}
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                            <td className="py-2 px-4 border-b text-gray-800">{user.username}</td>
+                                            <td className="py-2 px-4 border-b text-gray-800">{user.id}</td>
+                                            <td className="py-2 px-4 border-b text-gray-800">{user.email}</td>
+                                            <td className="py-2 px-4 border-b text-gray-800">
+                                                {user.isAdmin ? "True" : "False"}
+                                            </td>
+                                            <td className="py-2 px-4 border-b">
+                                                <button
+                                                    className="bg-blue-500 text-white px-4 py-1 rounded mr-2"
+                                                    onClick={() => editUser(user.id)}
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    className="bg-red-500 text-white px-4 py-1 rounded"
+                                                    onClick={() => handleDeleteClick(user.id)}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             )}
             <ConfirmModal
@@ -141,7 +145,7 @@ const Users = () => {
                 title="Confirm Deletion"
                 message="Are you sure you want to delete this user? This action cannot be undone."
             />
-        </div>
+        </>
     );
 };
 
