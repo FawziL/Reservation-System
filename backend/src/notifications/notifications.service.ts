@@ -23,12 +23,12 @@ export class NotificationsService {
     ) {}
     
     // Enviar un correo electrónico
-    async sendEmail(options: { to: string; subject: string; text: string }) {
+    async sendEmail(options: { to: string; subject: string; html:string }) {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: options.to,
             subject: options.subject,
-            text: options.text,
+            html: options.html,
         };
 
         try {

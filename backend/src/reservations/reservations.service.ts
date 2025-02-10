@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { UsersService } from '@/users/users.service';
@@ -8,6 +8,7 @@ import { Reservation } from '@/entities/reservation.entity';
 import { Table } from '@/entities/table.entity';
 import { NotificationsService } from '@/notifications/notifications.service';
 import { NotificationsGateway } from '@/notifications/notifications.gateway'; // Importar el gateway
+import { JwtUtil } from '../utils/jwt.util';
 
 @Injectable()
 export class ReservationsService {
@@ -42,7 +43,7 @@ export class ReservationsService {
             table: { id: createReservationDto.table },
         });
 
-        //const savedReservation = await this.reservationRepository.save(reservation);
+        const savedReservation = await this.reservationRepository.save(reservation);
 
         const fecha = new Date(reservation.reservationDate);
         const anio = fecha.getFullYear();
@@ -52,11 +53,22 @@ export class ReservationsService {
         const minutos = fecha.getMinutes();
 
         // Enviar notificación por email
-        /*await this.notificationsService.sendEmail({
+        await this.notificationsService.sendEmail({
             to: user.email,
             subject: 'Reservation Confirmation',
-            text: `Your reservation for table ${table.tableNumber} on ${dia}/${mes}/${anio} ${horas}:${minutos} has been confirmed.`,
-        });*/
+            html: 
+            `
+                <p>Your reservation for table <strong>${table.tableNumber}</strong> on <strong>${dia}/${mes}/${anio} ${horas}:${minutos}</strong> has been created.</p>
+                    
+                <p>Please, click the link below to confirm your reservation:</p>
+                <p
+                    <a href="http://localhost:3000/confirm-reservation?token=${JwtUtil.generateConfirmationToken(reservation.id)}" 
+                        style="background-color:#4CAF50;color:white;padding:10px 15px;text-decoration:none;border-radius:5px;">
+                        Confirm Reservation
+                    </a>
+                </p>
+            `,
+        });
 
         const notification = 
         {
@@ -150,5 +162,28 @@ export class ReservationsService {
         }
 
         await this.reservationRepository.remove(reservation);
+    }
+    
+    async confirmReservation(token: string) {
+        try {
+            const decoded = JwtUtil.verifyToken(token);
+
+            if (!decoded || !decoded.reservationId) {
+                throw new BadRequestException('Invalid or expired token');
+            }
+
+            const reservation = await this.reservationRepository.findOne({
+                where: { id: decoded.reservationId },
+            });
+
+            if (!reservation) {
+                throw new NotFoundException('Reservation not found');
+            }
+
+            reservation.status = 'confirmed';
+            return await this.reservationRepository.save(reservation);
+        } catch (error) {
+            throw new BadRequestException('Invalid or expired token');
+        }
     }
 }

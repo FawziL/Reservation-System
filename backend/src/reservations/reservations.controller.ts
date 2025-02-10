@@ -6,11 +6,13 @@ import {
     Patch,
     Param,
     Delete,
+    BadRequestException,
 } from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import { ConfirmReservationDto } from './dto/confirm-reservation.dto';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('reservations')
 @Controller('api/reservations')
@@ -68,5 +70,17 @@ export class ReservationsController {
     @Delete(':id')
     remove(@Param('id') id: string) {
         return this.reservationsService.remove(+id);
+    }
+
+    @ApiOperation({ summary: 'Confirmar una reserva con un token' })
+    @ApiResponse({ status: 200, description: 'Reserva confirmada con éxito.' })
+    @ApiResponse({ status: 400, description: 'Token inválido o expirado.' })
+    @ApiBody({ type: ConfirmReservationDto, description: 'Token para confirmar la reserva' })
+    @Post('confirm')
+    confirmReservation(@Body() confirmReservationDto: ConfirmReservationDto) {
+        if (!confirmReservationDto) {
+            throw new BadRequestException('Token is required');
+        }
+        return this.reservationsService.confirmReservation(confirmReservationDto.token);
     }
 }
