@@ -1,6 +1,7 @@
 "use client";  // Marca el componente como Cliente
 import { useState } from 'react';
 import api from '@/services/api';
+import { toast } from "react-toastify";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -10,21 +11,27 @@ const ForgotPassword = () => {
         e.preventDefault();
 
         try {
-            const response = await api.post('/auth/request-password-reset', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email }),
-            });
+            const response = await api.post('/auth/request-password-reset', { email });
 
             if (response.status === 200) {
-                setMessage('Se ha enviado un correo con instrucciones para restablecer tu contraseña.');
-            } else {
-                setMessage('Error al solicitar la recuperación de contraseña.');
+                setMessage("¡Se ha enviado el correo de confirmación!");
+                toast.success(
+                    `Se ha enviado el correo de confirmación con éxito! 
+                    Status: ${response.statusText}`,
+                    {
+                        position: "top-right",
+                        autoClose: 3000,
+                    }
+                );
             }
-        } catch (error) {
-            setMessage('Error de conexión.');
+        } catch (err:any) {
+            const errorMessage = err.response?.data?.message || 'Unexpected error';
+
+            toast.error(`${err.response?.statusText || 'Error'}: ${errorMessage}`, {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+            setMessage(errorMessage);
         }
     };
 

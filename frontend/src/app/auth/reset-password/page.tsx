@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import api from "@/services/api";
+import { toast } from "react-toastify";
 
 export default function ResetPassword() {
     const [newPassword, setNewPassword] = useState("");
@@ -12,7 +13,6 @@ export default function ResetPassword() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!token) {
             setMessage("Token no válido o expirado.");
             return;
@@ -20,15 +20,27 @@ export default function ResetPassword() {
 
         try {
             const response = await api.post("/auth/reset-password", { token, newPassword });
-
-            if (response.status === 200) {
-                setMessage("Contraseña restablecida correctamente.");
-                setTimeout(() => router.push("/login"), 2000); // Redirigir al login tras 2s
-            } else {
-                setMessage("Error al restablecer la contraseña.");
+            if (response.status === 201) {
+                setMessage("¡Contraseña restablecida correctamente.!");
+                toast.success(
+                    `Se ha restablecida correctamente la contraseña con éxito! 
+                    Status: ${response.statusText}`,
+                    {
+                        position: "top-right",
+                        autoClose: 3000,
+                    }
+                );
+                setTimeout(() => router.push("/auth/login"), 3000);
             }
-        } catch (error) {
-            setMessage("Error de conexión.");
+
+        } catch (err:any) {
+            const errorMessage = err.response?.data?.message || 'Unexpected error';
+
+            toast.error(`${err.response?.statusText || 'Error'}: ${errorMessage}`, {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+            setMessage(errorMessage);
         }
     };
 

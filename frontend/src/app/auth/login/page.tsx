@@ -39,8 +39,8 @@ const Login = () => {
 
   return (
       <div className='container mt-6'>
-          <h1>Login</h1>
-          <form onSubmit={handleSubmit} className='mt-3'>
+            <h1>Login</h1>
+            <form onSubmit={handleSubmit} className='mt-3'>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <h2>Email:</h2>
                 <input 
@@ -57,7 +57,10 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)} 
                 />
                 <button type="submit">Login</button>
-          </form>
+            </form>
+            <p className='text-center'>
+                <a href="/auth/forget-password">Do you forget your password?</a>
+            </p>
       </div>
   );
 };

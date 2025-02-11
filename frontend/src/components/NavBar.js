@@ -22,7 +22,6 @@ const Navbar = () => {
         { path: "/", name: "Home", icon: "🏠" },
         { path: "/auth/register", name: "Register", icon: "✍️", auth: false },
         { path: "/auth/login", name: "Login", icon: "🔑", auth: false },
-        { path: "/auth/forget-password", name: "ForgetPassword", icon: "🔑", auth: false },
         {
             path: "/reservations",
             name: "Reservations User",

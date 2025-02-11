@@ -2,34 +2,31 @@ import {
     Injectable,
     ConflictException,
     UnauthorizedException,
+    NotFoundException
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from '@/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
+import { ForgetPasswordDto } from './dto/foget-password.tdo';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '@/users/users.service';
 import { NotificationsService } from '@/notifications/notifications.service';
-import { JwtUtil } from '../utils/jwt.util';
 
 @Injectable()
 export class AuthService {
     constructor(
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
         private readonly notificationsService: NotificationsService,
         private readonly usersService: UsersService,
         private readonly jwtService: JwtService,
     ) {}
 
     async register(createUserDto: RegisterDto): Promise<User> {
+
         const { username, password, email } = createUserDto;
 
         // Verificar si el usuario ya existe
-        const existingUser = await this.userRepository.findOne({
-            where: { email },
-        });
+        const existingUser = await this.usersService.findOneByEmail(email);
+
         if (existingUser) {
             throw new ConflictException('Email already registered');
         }
@@ -38,17 +35,17 @@ export class AuthService {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Crear un nuevo usuario
-        const newUser = this.userRepository.create({
+        const newUser = {
             username,
             password: hashedPassword,
             email,
-        });
+        };
 
-        return this.userRepository.save(newUser);
+        return this.usersService.createUser(newUser);
     }
 
     async validateUser(email: string, password: string): Promise<User | null> {
-        const user = await this.userRepository.findOne({ where: { email } });
+        const user = await this.usersService.findOneByEmail(email);
         if (user && (await bcrypt.compare(password, user.password))) {
             return user;
         }
@@ -67,9 +64,10 @@ export class AuthService {
     }
 
     async requestPasswordReset(email: string): Promise<void> {
+        console.log(email)
         const user = await this.usersService.findOneByEmail(email);
         if (!user) {
-            throw new Error('User not found');
+            throw new NotFoundException('User not found');
         }
 
         // Generar un token temporal para la recuperación de contraseña
@@ -93,10 +91,12 @@ export class AuthService {
         });
     }
 
-    async resetPassword(token: string, newPassword: string): Promise<void> {
-        console.log(token, console)
+    async resetPassword(createNewPassword:ForgetPasswordDto): Promise<void> {
+        const { token, newPassword } = createNewPassword
+
         // Verificar el token
-        const payload = JwtUtil.verifyToken(token);
+        const payload = this.jwtService.verify(token);
+
         if (!payload || !payload.userId) {
             throw new Error('Invalid or expired token');
         }
