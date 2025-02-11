@@ -5,9 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '@/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+import { UsersModule } from '@/users/users.module';
+import { NotificationsModule } from '@/notifications/notifications.module';
 
 @Module({
     imports: [
+        UsersModule, 
+        NotificationsModule,
         TypeOrmModule.forFeature([User]),
         JwtModule.register({ 
             secret: process.env.JWT_SECRET,

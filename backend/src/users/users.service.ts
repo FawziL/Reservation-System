@@ -23,6 +23,11 @@ export class UsersService {
         return await this.userRepository.findOneBy({ id });
     }
 
+    // Obtener un usuario por Email
+    async findOneByEmail(email: string){
+        return await this.userRepository.findOneBy({ email });
+    }
+
     // Actualizar un usuario
     async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
         const existingUser = await this.findOne(id);
