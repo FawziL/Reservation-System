@@ -1,9 +1,10 @@
-import { Controller, Post, Body, UnauthorizedException, HttpCode, HttpStatus  } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, HttpCode, HttpStatus, Query  } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { User } from '@/entities/user.entity';
 import { LoginDto } from './dto/login.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ForgetPasswordDto } from './dto/foget-password.tdo';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('api/auth')
@@ -34,5 +35,24 @@ export class AuthController {
         }
 
         return this.authService.login(user);
+    }
+
+    @ApiOperation({ summary: 'Envio del correo para recuperación de contraseña' })
+    @ApiParam({ name: 'email', description: 'Email del usuario que desea recuperar contraseña', type: 'string' })
+    @ApiResponse({ status: 200, description: 'Se envió con éxito el correo electrónico.' })
+    @HttpCode(HttpStatus.OK) // Especifica el código de estado 200
+    @ApiResponse({ status: 500, description: 'Correo electrónico no válido.' })
+    @Post('request-password-reset')
+    async requestPasswordReset(@Body('email') email: string): Promise<void> {
+        await this.authService.requestPasswordReset(email);
+    }
+
+    @ApiOperation({ summary: 'Recuperación de contraseña Usuario' })
+    @ApiBody({ type: ForgetPasswordDto, description: 'Datos necesarios para recuperar la contraseña' })
+    @ApiResponse({ status: 201, description: 'Nueva contraseña registrada con éxito.' })
+    @ApiResponse({ status: 400, description: 'Token o contraseña no válida.' })
+    @Post('reset-password')
+    async resetPassword(@Body()createNewPassword:ForgetPasswordDto): Promise<void> {
+        await this.authService.resetPassword(createNewPassword);
     }
 }

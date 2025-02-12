@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not } from 'typeorm';
 import { User } from '@/entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -18,9 +19,26 @@ export class UsersService {
         });
     }
 
+    // Crear un usuario
+    async createUser(createUserDto: CreateUserDto): Promise<User> {
+        const { username, password, email } = createUserDto;
+        const newUser = this.userRepository.create({
+            username,
+            password,
+            email,
+        });
+
+        return this.userRepository.save(newUser);
+    }
+
     // Obtener un usuario por ID
     async findOne(id: number): Promise<User> {
         return await this.userRepository.findOneBy({ id });
+    }
+
+    // Obtener un usuario por Email
+    async findOneByEmail(email: string){
+        return await this.userRepository.findOneBy({ email });
     }
 
     // Actualizar un usuario
