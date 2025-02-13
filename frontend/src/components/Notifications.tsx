@@ -2,18 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-
-type Notification = {
-    id: number;
-    message: string;
-    reservationId: number;
-    userId: number;
-    isRead?: boolean;
-};
-
-type NotificationsProps = {
-    userId: number;
-};
+import api from "@/services/api";
+import { Notification, NotificationsProps } from "@/types/notification";
 
 const Notifications = ({ userId }: NotificationsProps) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -25,17 +15,17 @@ const Notifications = ({ userId }: NotificationsProps) => {
         const fetchNotifications = async () => {
             try {
                 // Obtener todas las notificaciones del usuario
-                const allNotificationsResponse = await fetch(
-                    `http://localhost:8080/notifications/user/${userId}`
-                );
-                const allNotifications = await allNotificationsResponse.json();
+                
+                const allNotificationsResponse = await api.get(`notifications/user/${userId}`);
+
+                const allNotifications = allNotificationsResponse.data
+                
                 setNotifications(allNotifications);
 
                 // Obtener notificaciones no leídas
-                const unreadResponse = await fetch(
-                    `http://localhost:8080/notifications/user/${userId}/unread`
-                );
-                const unreadNotifications = await unreadResponse.json();
+                const unreadResponse = await api.get(`/notifications/user/${userId}/unread`);
+
+                const unreadNotifications = unreadResponse.data;
 
                 // Determinar las notificaciones leídas
                 const readIds = allNotifications
@@ -78,9 +68,7 @@ const Notifications = ({ userId }: NotificationsProps) => {
 
             // Marcar la notificación como leída en el backend
             try {
-                await fetch(`http://localhost:8080/notifications/${id}/read`, {
-                    method: "PATCH",
-                });
+                await api.patch(`/notifications/${id}/read`);
             } catch (error) {
                 console.error("Error marking notification as read:", error);
             }

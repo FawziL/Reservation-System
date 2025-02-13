@@ -4,58 +4,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/AuthContext";
 import Notifications from "@/components/Notifications";
+import { navItems } from "@/utils/navItems";
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const [isClient, setIsClient] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const userId = user?.userID;
-    const isAdmin = user?.admin;
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
     useEffect(() => {
         setIsClient(true);
     }, []);
-
-    const navItems = [
-        { path: "/", name: "Home", icon: "🏠" },
-        { path: "/auth/register", name: "Register", icon: "✍️", auth: false },
-        { path: "/auth/login", name: "Login", icon: "🔑", auth: false },
-        {
-            path: "/reservations",
-            name: "Reservations User",
-            icon: "📅",
-            auth: true,
-        },
-        {
-            path: "/reservations/create",
-            name: "Create Reservation",
-            icon: "➕",
-            auth: true,
-        },
-        {
-            path: "/admin/reservations",
-            name: "Reservations Admin",
-            icon: "📋",
-            auth: "admin",
-        },
-        { path: "/admin/users", name: "Users", icon: "👥", auth: "admin" },
-        { path: "/admin/tables", name: "Tables", icon: "🪑", auth: "admin" },
-        {
-            path: "/admin/tables/create",
-            name: "Create Table",
-            icon: "🆕",
-            auth: "admin",
-        },
-        {
-            path: "/logout",
-            name: "Logout",
-            icon: "🚪",
-            auth: true,
-            isLogout: true,
-        },
-    ];
 
     return (
         <>
@@ -66,7 +27,7 @@ const Navbar = () => {
                 </button>
                 <div className="flex items-center">
                     {/* Renderizar Notifications solo si userId existe */}
-                    {userId && isAdmin && <Notifications userId={userId} />}
+                    {userId && <Notifications userId={userId} />}
                     <h1 className="text-lg font-bold">Reservation System 1.0.0</h1>
                 </div>
             </div>
