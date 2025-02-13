@@ -1,13 +1,13 @@
 "use client";
 import api from "@/services/api";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { toast } from "react-toastify";
 
-const ConfirmReservation = () => {
+function ConfirmReservationContent() {
     const searchParams = useSearchParams();
     const [message, setMessage] = useState("Confirmando reserva...");
-    
+
     useEffect(() => {
         const confirmReservation = async () => {
             const token = searchParams.get("token");
@@ -17,9 +17,7 @@ const ConfirmReservation = () => {
             }
 
             try {
-                const response = await api.post("/reservations/confirm", {
-                    token: token
-                });
+                const response = await api.post("/reservations/confirm", { token });
                 if (response.status === 201) {
                     setMessage("¡Reserva confirmada con éxito!");
                     toast.success(
@@ -31,8 +29,8 @@ const ConfirmReservation = () => {
                         }
                     );
                 }
-            } catch (err:any) {
-                toast.error(`${err.response.statusText}: ${err.message}`, {
+            } catch (err: any) {
+                toast.error(`${err.response?.statusText || "Error"}: ${err.message}`, {
                     position: "top-right",
                     autoClose: 3000,
                 });
@@ -43,12 +41,13 @@ const ConfirmReservation = () => {
         confirmReservation();
     }, [searchParams]);
 
+    return <p>{message}</p>;
+}
+
+export default function ConfirmReservation() {
     return (
-        <div>
-            <p>{message}</p>
-        </div>
+        <Suspense fallback={<p>Cargando...</p>}>
+            <ConfirmReservationContent />
+        </Suspense>
     );
-};
-
-export default ConfirmReservation;
-
+}

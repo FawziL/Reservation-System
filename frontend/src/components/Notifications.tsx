@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import api from "@/services/api";
 import { Notification, NotificationsProps } from "@/types/notification";
+import Image from "next/image";
 
 const Notifications = ({ userId }: NotificationsProps) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -88,7 +89,7 @@ const Notifications = ({ userId }: NotificationsProps) => {
                 onClick={toggleDropdown}
                 aria-label="Notifications"
             >
-                <img src="/notification.svg" alt="Notificaciones" width={28} height={28} />
+                <Image src="/notification.svg" alt="Notificaciones" width={28} height={28} />
                 {/* Contador de notificaciones no leídas */}
                 {unreadNotifications.length > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 rounded-full">
