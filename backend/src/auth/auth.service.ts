@@ -77,7 +77,7 @@ export class AuthService {
         );
 
         // Enviar el correo con el enlace de recuperación
-        const resetUrl = `http://localhost:3000/auth/reset-password?token=${resetToken}`;
+        const resetUrl = `${process.env.CORS_ORIGIN}/auth/reset-password?token=${resetToken}`;
         await this.notificationsService.sendEmail({
             to: user.email,
             subject: 'Recuperación de contraseña',
