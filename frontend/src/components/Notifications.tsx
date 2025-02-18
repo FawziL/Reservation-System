@@ -49,7 +49,7 @@ const Notifications = ({ userId }: NotificationsProps) => {
 
     // Conectar Socket.IO y escuchar nuevas notificaciones
     useEffect(() => {
-        const socket = io("http://localhost:8080");
+        const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL);
 
         socket.on("new_notification", (data: Notification) => {
             console.log("Notificación recibida:", data);

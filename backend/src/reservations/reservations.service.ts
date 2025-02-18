@@ -62,7 +62,7 @@ export class ReservationsService {
                     
                 <p>Please, click the link below to confirm your reservation:</p>
                 <p
-                    <a href="http://localhost:3000/confirm-reservation?token=${JwtUtil.generateConfirmationToken(reservation.id)}" 
+                    <a href="${process.env.CORS_ORIGIN}/confirm-reservation?token=${JwtUtil.generateConfirmationToken(reservation.id)}" 
                         style="background-color:#4CAF50;color:white;padding:10px 15px;text-decoration:none;border-radius:5px;">
                         Confirm Reservation
                     </a>
@@ -107,7 +107,7 @@ export class ReservationsService {
         });
 
         if (!reservations || reservations.length === 0) {
-            throw new NotFoundException('No reservations found for this user');
+            return [];
         }
 
         return reservations;
