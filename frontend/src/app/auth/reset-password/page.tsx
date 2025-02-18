@@ -1,10 +1,10 @@
 "use client";  
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import api from "@/services/api";
 import { toast } from "react-toastify";
 
-export default function ResetPassword() {
+function ResetPasswordContent() {
     const [newPassword, setNewPassword] = useState("");
     const [message, setMessage] = useState("");
     const router = useRouter();
@@ -21,9 +21,9 @@ export default function ResetPassword() {
         try {
             const response = await api.post("/auth/reset-password", { token, newPassword });
             if (response.status === 201) {
-                setMessage("¡Contraseña restablecida correctamente.!");
+                setMessage("¡Contraseña restablecida correctamente!");
                 toast.success(
-                    `Se ha restablecida correctamente la contraseña con éxito! 
+                    `Se ha restablecido correctamente la contraseña con éxito! 
                     Status: ${response.statusText}`,
                     {
                         position: "top-right",
@@ -32,12 +32,11 @@ export default function ResetPassword() {
                 );
                 setTimeout(() => router.push("/auth/login"), 3000);
             }
+        } catch (err: any) {
+            const errorMessage = err.response?.data?.message || "Unexpected error";
 
-        } catch (err:any) {
-            const errorMessage = err.response?.data?.message || 'Unexpected error';
-
-            toast.error(`${err.response?.statusText || 'Error'}: ${errorMessage}`, {
-                position: 'top-right',
+            toast.error(`${err.response?.statusText || "Error"}: ${errorMessage}`, {
+                position: "top-right",
                 autoClose: 3000,
             });
             setMessage(errorMessage);
@@ -59,5 +58,13 @@ export default function ResetPassword() {
             </form>
             {message && <p>{message}</p>}
         </div>
+    );
+}
+
+export default function ResetPassword() {
+    return (
+        <Suspense fallback={<p>Cargando...</p>}>
+            <ResetPasswordContent />
+        </Suspense>
     );
 }
