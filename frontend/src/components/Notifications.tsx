@@ -104,8 +104,7 @@ const Notifications = ({ userId }: NotificationsProps) => {
                     <div className="p-2">
                         <h3 className="text-lg font-semibold mb-2">Notificaciones:</h3>
                         {notifications.length > 0 ? (
-                            <ul>
-                                {/* Mostrar notificaciones no leídas primero */}
+                            <ul className="max-h-64 overflow-y-auto">
                                 {notifications
                                     .sort((a, b) => {
                                         const aIsRead = readNotifications.includes(a.id);
@@ -123,7 +122,6 @@ const Notifications = ({ userId }: NotificationsProps) => {
                                             onClick={() => handleNotificationClick(notif.id)}
                                         >
                                             <div className="flex items-center">
-                                                {/* Punto rojo si no ha sido leída */}
                                                 {!readNotifications.includes(notif.id) && (
                                                     <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
                                                 )}

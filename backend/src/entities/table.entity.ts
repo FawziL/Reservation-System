@@ -7,7 +7,7 @@ export class Table {
     id: number;
 
     @Column()
-    tableNumber: string;
+    tableName: string;
 
     @Column()
     seats: number;

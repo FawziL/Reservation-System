@@ -108,7 +108,7 @@ const Tables = () => {
                                 <thead className="text-white">
                                     <tr>
                                         <th className="py-2 px-4 border-b">
-                                            Table Number
+                                            Table Name
                                         </th>
                                         <th className="py-2 px-4 border-b">ID</th>
                                         <th className="py-2 px-4 border-b">Seats</th>
@@ -126,7 +126,7 @@ const Tables = () => {
                                             } hover:bg-gray-200`}
                                         >
                                             <td className="py-2 px-4 border-b text-gray-800">
-                                                {table.tableNumber}
+                                                {table.tableName}
                                             </td>
                                             <td className="py-2 px-4 border-b text-gray-800">
                                                 {table.id}

@@ -97,7 +97,7 @@ const CreateReservation = () => {
                     <option value="" disabled className="bg-gray-800 text-gray-400">Select a table</option>
                     {tables.map((table: any) => (
                         <option key={table.id} value={table.id} className="bg-gray-800 text-white">
-                            {table.tableNumber}
+                            {table.tableName}
                         </option>
                     ))}
                 </select>

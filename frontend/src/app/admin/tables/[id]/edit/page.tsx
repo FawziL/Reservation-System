@@ -10,7 +10,7 @@ interface Params {
 
 const EditTable = ({ params }: { params: Params }) => {
     const { id } = params; // Obtiene el ID de la URL
-    const [table, setTable] = useState({ tableNumber: "", seats: 0 });
+    const [table, setTable] = useState({ tableName: "", seats: 0 });
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
@@ -75,12 +75,12 @@ const EditTable = ({ params }: { params: Params }) => {
         <div className="container mt-6">
             <h1>Edit Table</h1>
             <form onSubmit={handleSubmit} className="mt-3">
-                <h2>Table Number:</h2>
+                <h2>Table Name:</h2>
                 <input
                     type="text"
                     placeholder="Number of seats"
-                    name="tableNumber"
-                    value={table.tableNumber}
+                    name="tableName"
+                    value={table.tableName}
                     onChange={handleChange}
                 />
 

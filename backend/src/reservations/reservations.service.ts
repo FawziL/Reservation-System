@@ -58,7 +58,7 @@ export class ReservationsService {
             subject: 'Reservation Confirmation',
             html: 
             `
-                <p>Your reservation for table <strong>${table.tableNumber}</strong> on <strong>${dia}/${mes}/${anio} ${horas}:${minutos}</strong> has been created.</p>
+                <p>Your reservation for table <strong>${table.tableName}</strong> on <strong>${dia}/${mes}/${anio} ${horas}:${minutos}</strong> has been created.</p>
                     
                 <p>Please, click the link below to confirm your reservation:</p>
                 <p
@@ -72,7 +72,7 @@ export class ReservationsService {
 
         const notification = 
         {
-            message: `Nueva reservación creada por ${user.username} para la mesa ${table.tableNumber} el ${dia}/${mes}/${anio} ${horas}:${minutos}.`,
+            message: `Nueva reservación creada por ${user.username} para la mesa ${table.tableName} el ${dia}/${mes}/${anio} ${horas}:${minutos}.`,
             reservationId: reservation.id,
             userId: user.id,
         }

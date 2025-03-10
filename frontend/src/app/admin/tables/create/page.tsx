@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
 
 const CreateTable = () => {
-    const [tableNumber, setTableNumber] = useState('');
+    const [tableName, settableName] = useState('');
     const [seats, setSeats] = useState('');
     const [error, setError] = useState<string | null>(null); 
     const router = useRouter();
@@ -15,7 +15,7 @@ const CreateTable = () => {
         setError(null);
 
         try {
-            const response = await api.post('/tables', { tableNumber, seats });
+            const response = await api.post('/tables', { tableName, seats });
             if (response.status === 201) {
                 toast.success(`Se ha agregado la mesa con éxito! 
                     Status: ${response.statusText}`, {
@@ -44,8 +44,8 @@ const CreateTable = () => {
                 <input 
                     type="text" 
                     placeholder="Position" 
-                    value={tableNumber} 
-                    onChange={(e) => setTableNumber(e.target.value)} 
+                    value={tableName} 
+                    onChange={(e) => settableName(e.target.value)} 
                 />
                 <h2>Number of seats:</h2>
                 <input 

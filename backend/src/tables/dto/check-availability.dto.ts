@@ -11,7 +11,7 @@ export class CheckAvailabilityDto {
         example: 'A1',
         description: 'Número de la mesa a verificar',
     })
-    tableNumber: string;
+    tableName: string;
 
     @ApiProperty({
         example: 4,

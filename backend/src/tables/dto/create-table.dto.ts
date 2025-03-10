@@ -5,7 +5,7 @@ export class CreateTableDto {
         example: 'A1',
         description: 'Número de la mesa',
     })
-    tableNumber: string;
+    tableName: string;
 
     @ApiProperty({
         example: 4,

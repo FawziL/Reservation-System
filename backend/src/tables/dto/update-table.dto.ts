@@ -8,7 +8,7 @@ export class UpdateTableDto extends PartialType(CreateTableDto) {
         description: 'Número de la mesa (opcional)',
         required: false,
     })
-    tableNumber?: string;
+    tableName?: string;
 
     @ApiProperty({
         example: 4,

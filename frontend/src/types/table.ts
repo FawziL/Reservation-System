@@ -1,5 +1,5 @@
 export interface Table {
     id: number;
-    tableNumber: string;
+    tableName: string;
     seats: number;
 }

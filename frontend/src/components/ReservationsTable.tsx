@@ -20,7 +20,7 @@ const ReservationTable: React.FC<ReservationTableProps> = ({ reservations, isAdm
                         <th className="py-2 px-4 text-left">User</th>
                         <th className="py-2 px-4 text-left">Reservation Date</th>
                         <th className="py-2 px-4 text-left">Status</th>
-                        <th className="py-2 px-4 text-left">Table Number</th>
+                        <th className="py-2 px-4 text-left">Table Name</th>
                         <th className="py-2 px-4 text-left">Seats</th>
                         {isAdmin && <th className="py-2 px-4 text-left">Actions</th>}
                     </tr>
@@ -31,7 +31,7 @@ const ReservationTable: React.FC<ReservationTableProps> = ({ reservations, isAdm
                             <td className="py-2 px-4 text-gray-700">{reservation.user.username}</td>
                             <td className="py-2 px-4 text-gray-700">{new Date(reservation.reservationDate).toLocaleString()}</td>
                             <td className="py-2 px-4 text-gray-700">{reservation.status}</td>
-                            <td className="py-2 px-4 text-gray-700">{reservation.table.tableNumber}</td>
+                            <td className="py-2 px-4 text-gray-700">{reservation.table.tableName}</td>
                             <td className="py-2 px-4 text-gray-700">{reservation.table.seats}</td>
                             {isAdmin && (
                                 <td className="py-2 px-4 text-gray-700 flex space-x-2">
