@@ -82,14 +82,14 @@ const Users = () => {
             {users.length === 0 ? (
                 <p className="text-2xl font-bold mb-4 text-center">No Users found.</p>
             ) : (
-                <div className="p-6 min-h-90 text-black">
+                <div className="reserv">
                     <h1 className="text-2xl font-semibold text-start">Panel de Usuario</h1>
                     <div className="mb-6 mt-4 flex justify-between items-center">
-                        <div className="bg-white p-4 rounded-lg shadow-md flex items-center justify-between">
+                        <div className="bg-white p-2 rounded-lg shadow-md flex items-center justify-between">
                             <span className="text-lg font-medium text-black">Usuarios Totales: {users.length}</span>
                         </div>
                     </div>
-                    <div className="bg-white p-4 rounded-lg shadow-md">
+                    <div className="bg-white p-2 rounded-lg shadow-md">
                         <h3 className="text-lg font-semibold mb-4 text-black">Usuarios</h3>
                         <div className="overflow-x-auto  min-h-64">
                             <table className="w-5/5 bg-gray-800 shadow-md rounded-lg overflow-hidden text-left">
@@ -116,7 +116,7 @@ const Users = () => {
                                             <td className="py-2 px-4 border-b text-gray-800">
                                                 {user.isAdmin ? "True" : "False"}
                                             </td>
-                                            <td className="py-2 px-4 border-b">
+                                            <td className="py-2 px-4 text-gray-700 flex space-x-2">
                                                 <button
                                                     className="bg-blue-500 text-white px-4 py-1 rounded mr-2"
                                                     onClick={() => editUser(user.id)}

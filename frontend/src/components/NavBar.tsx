@@ -27,8 +27,8 @@ const Navbar = () => {
                 </button>
                 <div className="flex items-center">
                     {/* Renderizar Notifications solo si userId existe */}
+                    <h2 className="text-lg font-bold">Reservation System 1.0.0</h2>
                     {userId && <Notifications userId={userId} />}
-                    <h1 className="text-lg font-bold">Reservation System 1.0.0</h1>
                 </div>
             </div>
 
@@ -38,7 +38,7 @@ const Navbar = () => {
                     isSidebarOpen ? "w-64" : "w-20"
                 }`}
             >
-                <nav className="pt-20 p-6">
+                <nav className="pt-16 p-6">
                     <ul>
                         {navItems.map((item, index) => {
                             // Lógica para determinar si mostrar la ruta
@@ -49,7 +49,7 @@ const Navbar = () => {
                             return (
                                 <li
                                     key={index}
-                                    className="mb-2 h-12 hover:bg-gray-700 rounded transition duration-200 flex items-center cursor-pointer"
+                                    className="mb-2 h-10 hover:bg-gray-700 rounded transition duration-200 flex items-center cursor-pointer"
                                     onClick={item.isLogout ? logout : undefined}
                                 >
                                     {item.isLogout ? (

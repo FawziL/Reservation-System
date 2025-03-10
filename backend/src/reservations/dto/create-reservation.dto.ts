@@ -17,5 +17,5 @@ export class CreateReservationDto {
         example: 5,
         description: 'ID de la mesa reservada',
     })
-    table: number;
+    tableID: number;
 }

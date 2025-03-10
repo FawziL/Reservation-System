@@ -31,7 +31,7 @@ export class ReservationsService {
         }
 
         const table = await this.tableRepository.findOne({
-            where: { id: createReservationDto.table },
+            where: { id: createReservationDto.tableID },
         });
         if (!table) {
             throw new NotFoundException('Table not found');
@@ -40,7 +40,7 @@ export class ReservationsService {
         const reservation = this.reservationRepository.create({
             reservationDate: createReservationDto.reservationDate,
             user: user,
-            table: { id: createReservationDto.table },
+            table: { id: createReservationDto.tableID },
         });
 
         const savedReservation = await this.reservationRepository.save(reservation);

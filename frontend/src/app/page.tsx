@@ -17,9 +17,9 @@ const Home = () => {
     };
 
     return (
-        <main className="flex flex-col items-center justify-center p-12">
+        <main className="mainNavigation">
             <h1 className="text-2xl font-bold mb-6">Welcome {user?.username}</h1>
-            <div className="grid grid-cols-3 gap-8">
+            <div className="containerCardNavigation">
                 {navItems
                     .filter(item => 
                         item.auth === undefined || 
@@ -31,7 +31,7 @@ const Home = () => {
                         <button
                             key={item.path}
                             onClick={() => handleNavigation(item)}
-                            className="flex flex-col items-center justify-center p-4 bg-gray-100 rounded-lg shadow hover:bg-gray-200 transition"
+                            className="cardNavigation"
                         >
                             <span className="text-3xl">{item.icon}</span>
                             <span className="mt-2 text-sm font-medium text-black">{item.name}</span>
